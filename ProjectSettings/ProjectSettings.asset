@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
-  productGUID: 5e5ccbbf56f58d74da6833b8efec7a0a
+  productGUID: 7fe28e6862bfca44b92c7c546712d586
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: Motores de desarrollo
+  productName: Prueba Objetos Motores
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -844,14 +844,14 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: Motores de desarrollo
+  metroPackageName: Prueba Objetos Motores
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: Motores de desarrollo
+  metroApplicationDescription: Prueba Objetos Motores
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -920,14 +920,14 @@ PlayerSettings:
   qnxGraphicConfPath: 
   apiCompatibilityLevel: 6
   captureStartupLogs: {}
-  activeInputHandler: 1
+  activeInputHandler: 2
   windowsGamepadBackendHint: 0
   enableDirectStorage: 0
-  cloudProjectId: 7af85d57-5011-4195-80da-5fa42c847edf
+  cloudProjectId: c1803938-4671-4df8-bc6b-9307fe74238a
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Motores de desarrollo
-  organizationId: ezequielbvanegas
+  projectName: Prueba Objetos Motores
+  organizationId: dieguitomlp87_unity
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
