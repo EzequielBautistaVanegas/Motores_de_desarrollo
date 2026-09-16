@@ -15,7 +15,7 @@ public class SimpleDoorController : MonoBehaviour
     [SerializeField] private InputActionReference interactionAction;
     [SerializeField] private float rotationSpeed = 60f;
 
-    private Quaternion closedRotation; /*Quaternion no lo utilizamos para mejorar el sistema de rotaciones/giros*/
+    private Quaternion closedRotation; /*Quaternion  lo utilizamos para mejorar el sistema de rotaciones/giros*/
      /*En este caso guardamos las rotaciones iniciales, si importar el angulo de inicio */
 
     private Quaternion targetRotation; /* Variable creada para indicar hacia donde giran las puertas */
