@@ -3,12 +3,17 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
+  tags:
+  - Slider
+  - Door
+  - Button
+  - SafeBox
   tags: []
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Interactive
   - Water
   - UI
   - interactable

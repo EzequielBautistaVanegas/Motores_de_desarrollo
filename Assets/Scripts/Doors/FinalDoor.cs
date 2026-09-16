@@ -11,7 +11,7 @@ public class FinalDoor : InteractableBase
     [SerializeField] private Transform leftDoor;
     [SerializeField] private Transform rightDoor;
 
-    [Header("Rotaci髇 de apertura")]
+    [Header("Rotaci贸n de apertura")]
     [SerializeField] private Vector3 leftOpenRotation;
     [SerializeField] private Vector3 rightOpenRotation;
 
@@ -31,19 +31,19 @@ public class FinalDoor : InteractableBase
 
     private void Start()
     {
-        // Guarda la rotaci髇 inicial de cada hoja.
-        // Esa posici髇 se considera "cerrada".
+        // Guarda la rotaci贸n inicial de cada hoja.
+        // Esa posici贸n se considera "cerrada".
         leftClosedRotation = leftDoor.localRotation;
         rightClosedRotation = rightDoor.localRotation;
 
-        // Al comenzar, el objetivo tambi閚 es la posici髇 cerrada.
+        // Al comenzar, el objetivo tambi茅n es la posici贸n cerrada.
         leftTargetRotation = leftClosedRotation;
         rightTargetRotation = rightClosedRotation;
     }
 
     private void Update()
     {
-        // Mueve suavemente la puerta izquierda hacia su rotaci髇 objetivo.
+        // Mueve suavemente la puerta izquierda hacia su rotaci贸n objetivo.
         leftDoor.localRotation = Quaternion.RotateTowards(
             leftDoor.localRotation,
             leftTargetRotation,
@@ -99,8 +99,8 @@ public class FinalDoor : InteractableBase
 
     private void OpenDoor()
     {
-        // Calcula la rotaci髇 final de cada hoja
-        // usando como base su rotaci髇 cerrada inicial.
+        // Calcula la rotaci贸n final de cada hoja
+        // usando como base su rotaci贸n cerrada inicial.
         leftTargetRotation =
             leftClosedRotation *
             Quaternion.Euler(leftOpenRotation);
