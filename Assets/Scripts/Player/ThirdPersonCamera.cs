@@ -56,6 +56,8 @@ public class ThirdPersonCamera : MonoBehaviour
         // La cámara comienza detrás del jugador.
         horizontalAngle = player.eulerAngles.y;
         verticalAngle = recenterVerticalAngle;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void LateUpdate()

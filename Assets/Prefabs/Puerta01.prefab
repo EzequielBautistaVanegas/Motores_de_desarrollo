@@ -80,6 +80,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Puerta01
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5ecffbcbd91211e48966b3ef15336dd3, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3433992052308909741, guid: 5ecffbcbd91211e48966b3ef15336dd3, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
@@ -125,12 +129,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8929516748024359508}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 14afee544278a204ea2e20ee7f2ebd15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimpleDoorController
   simpleDoor: {fileID: 6380070606100662696}
   openRotation: {x: 0, y: 0, z: 0}
-  interactionKey: 114
+  interactionAction: {fileID: 0}
   rotationSpeed: 80
