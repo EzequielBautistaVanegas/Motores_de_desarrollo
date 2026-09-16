@@ -1,7 +1,7 @@
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
-public class SliderController : MonoBehaviour, IInteractable
+public class CodeController : MonoBehaviour, IInteractable
 {
     /* Configuration Variables */
     [SerializeField] private float rotationVelocity = 60f;
@@ -13,8 +13,13 @@ public class SliderController : MonoBehaviour, IInteractable
 
     private void Awake()
     {
-        numCode = 1;
         pivot = transform.parent;
+    }
+
+    public void Start()
+    {
+        numCode = 0;
+        Interact();
     }
 
     public void Interact()

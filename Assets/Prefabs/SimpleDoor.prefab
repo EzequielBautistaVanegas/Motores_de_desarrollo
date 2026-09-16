@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4962404080190354885}
   - component: {fileID: 993673347641449159}
   m_Layer: 3
-  m_Name: Marco
+  m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 6724412459219218623}
   - component: {fileID: 2065551094688376974}
   m_Layer: 3
-  m_Name: PuertaDerecha
+  m_Name: RightDoor
   m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -384,7 +384,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec316e6f61e8ecc45b591b2ac099055e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  maxRotation: 120
-  minRotation: 0
   rotationVelocity: 60
+  maxRotation: 120
+  rotationAxis: 2
+  startRotation: {x: 0, y: 0, z: 0}
   isOpen: 0
+  codeNums: []

@@ -5,34 +5,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class ConfirmCode : MonoBehaviour, IInteractable
+public class ConfirmCode
 {
-    private string code, codeTry;
-    [SerializeField] private List<SliderController> codeNums;
-    private List<int> nums;
+    private string codeTry;
 
-    public void Awake()
-    {
-        code = Random.Range(1, 7).ToString()
-            + Random.Range(1, 7).ToString()
-            + Random.Range(1, 7).ToString();
-
-        Debug.Log(code);
-    }
-
-    public void Interact()
+    public bool CodeHandler(List<int> nums, string code)
     {
         codeTry = "";
 
-        foreach (var item in codeNums)
+        foreach (var item in nums)
         {
-            codeTry += item.GetNumCode().ToString();
+            codeTry += item.ToString();
         }
 
-        Debug.Log(codeTry);
-
-        Debug.Log(
-            codeTry == code ? "Correct" : "Wrong"
-        );
+        return codeTry == code;
     }
 }

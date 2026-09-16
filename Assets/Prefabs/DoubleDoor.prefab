@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7369806901819946540}
   - component: {fileID: 8390915243842616051}
   m_Layer: 3
-  m_Name: Marco02
+  m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 4906574749402068063}
   - component: {fileID: 4820898424203370629}
   m_Layer: 3
-  m_Name: PuertaDerecha
+  m_Name: RightDoor
   m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -238,7 +238,7 @@ GameObject:
   - component: {fileID: 623060876913443786}
   - component: {fileID: 6876760419019209481}
   m_Layer: 3
-  m_Name: PuertaIzquierda
+  m_Name: LeftDoor
   m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -406,7 +406,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec316e6f61e8ecc45b591b2ac099055e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorController
-  maxRotation: 120
-  minRotation: 0
   rotationVelocity: 60
+  maxRotation: 120
+  rotationAxis: 2
+  startRotation: {x: 0, y: 0, z: 0}
   isOpen: 0
+  codeNums: []
