@@ -11,6 +11,7 @@ public class Movement : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float _walkSpeed = 5f;
     [SerializeField] private float _sprintSpeed = 10f;
+    [SerializeField] private float _maxStamina = 100;
 
     [Header("Rotation")]
     [SerializeField] private float _rotateSpeed = 10f;
@@ -29,12 +30,13 @@ public class Movement : MonoBehaviour
     [SerializeField] private float dampTime = 0.15f;
 
     /* VARIABLES | IN CODE */
-    private CharacterController _controller;
     private float _speed;
     private float _verticalVelocity;
     private bool _sprintHeld;
+    private float _stamina;
     private Vector3 _move;
     private Vector2 _look;
+    private CharacterController _controller;
     private PlayerInput _input;
     private Animator _animator;
     private GameObject _playerModel;
@@ -111,7 +113,19 @@ public class Movement : MonoBehaviour
     /* SPRINT METHOD */
     private void HandleSprint()
     {
-        bool isSprinting = _sprintHeld && _move.z > 0.1f;
+        bool isSprinting = _sprintHeld && _move.z > 0.1f && _stamina > 0;
+
+        // Stamina management
+        if (isSprinting)
+        {
+            _stamina = Mathf.Max(_stamina - 1 * Time.deltaTime * 10, 0);
+            OnStaminaChanged?.Invoke(_stamina, _maxStamina);
+        }
+        else if (!_sprintHeld && _stamina < _maxStamina)
+        {
+            _stamina = Mathf.Min(_stamina + 1 * Time.deltaTime * 10, _maxStamina);
+            OnStaminaChanged?.Invoke(_stamina, _maxStamina);
+        }
 
         _speed = isSprinting ? _sprintSpeed : _walkSpeed;
         _animator.SetBool("isRunning", isSprinting);
@@ -135,6 +149,9 @@ public class Movement : MonoBehaviour
             _cameraTransform.localEulerAngles = new Vector3(Mathf.Clamp(_cameraTransform.localEulerAngles.x, minLookAngle, maxLookAngle), 0f, 0f);
         }
     }
+
+    /* HUD ACTIONS */
+    public static Action<float, float> OnStaminaChanged;
 
     /* INPUT EVENTS */
     public void OnMovement(InputAction.CallbackContext context)
