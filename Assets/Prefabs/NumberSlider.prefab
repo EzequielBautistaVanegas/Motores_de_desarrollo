@@ -3502,3 +3502,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 752bde2abb68b4540867d7270bfd5802, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SliderController
+  rotationVelocity: 60
+  _prompt: Rotar
+  _promptAnchor: {fileID: 0}

@@ -412,3 +412,4 @@ MonoBehaviour:
   startRotation: {x: 0, y: 0, z: 0}
   isOpen: 0
   codeNums: []
+  _promptAnchor: {fileID: 6167107656591088693}

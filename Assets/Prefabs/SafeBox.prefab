@@ -554,6 +554,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  _promptAnchor: {fileID: 3697957343983594529}
 --- !u!65 &1515557225812787773
 BoxCollider:
   m_ObjectHideFlags: 0

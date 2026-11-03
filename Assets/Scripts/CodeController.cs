@@ -5,11 +5,15 @@ public class CodeController : MonoBehaviour, IInteractable
 {
     /* Configuration Variables */
     [SerializeField] private float rotationVelocity = 60f;
+    [SerializeField] private string _prompt = "Rotar";
+    [SerializeField] private Transform _promptAnchor;
     /* Variables In Code */
     private int numCode;
     private float gradesTarget;
     private Transform pivot;
     private Quaternion rotationTarget;
+    public string Prompt => _prompt;
+    public Transform PromptAnchor => _promptAnchor != null ? _promptAnchor : transform;
 
     private void Awake()
     {

@@ -17,6 +17,9 @@ public class DoorController : MonoBehaviour, IInteractable
     [SerializeField] private bool isOpen;
     [Header("Has a Code?")]
     [SerializeField] private List<CodeController> codeNums;
+    [Header("Prompt Configuration")]
+    [SerializeField] private Transform _promptAnchor;
+
 
     /* Variables In code */
     private List<int> nums;
@@ -25,6 +28,8 @@ public class DoorController : MonoBehaviour, IInteractable
     private Vector3 leftVector, rightVector;
     private ConfirmCode confirmCode = new ConfirmCode();
     private string code;
+    public string Prompt => isOpen ? "Abrir" : "Cerrar";
+    public Transform PromptAnchor => _promptAnchor != null ? _promptAnchor : transform;
 
     private void Awake()
     {
@@ -67,8 +72,11 @@ public class DoorController : MonoBehaviour, IInteractable
                 nums.Add(item.GetNumCode());
             }
 
-            // Check if the code is right
-            if (!confirmCode.CodeHandler(nums, code)) return;
+            // Check if the code is right and prevent from closing
+            if (!confirmCode.CodeHandler(nums, code) || !isOpen) return;
+
+            // Remove the interactive layer
+            gameObject.layer = LayerMask.NameToLayer("Default");
         }
 
         // Set the rotation target

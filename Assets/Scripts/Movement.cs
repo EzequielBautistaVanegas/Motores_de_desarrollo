@@ -32,8 +32,10 @@ public class Movement : MonoBehaviour
     /* VARIABLES | IN CODE */
     private float _speed;
     private float _verticalVelocity;
+    private float _stamina = 100f;
     private bool _sprintHeld;
-    private float _stamina;
+    private bool _canMove = true;
+    public bool CanMove => _canMove;
     private Vector3 _move;
     private Vector2 _look;
     private CharacterController _controller;
@@ -156,17 +158,31 @@ public class Movement : MonoBehaviour
     /* INPUT EVENTS */
     public void OnMovement(InputAction.CallbackContext context)
     {
+        if (!_canMove) return;
         _move = context.ReadValue<Vector3>();
     }
 
     public void OnLook(InputAction.CallbackContext context)
     {
+        if (!_canMove) return;
         _look = context.ReadValue<Vector2>();
     }
 
     public void OnSprint(InputAction.CallbackContext context)
     {
+        if (!_canMove) return;
         if (context.performed) _sprintHeld = true;
         if (context.canceled) _sprintHeld = false;
+    }
+
+    /* FUNCTIONS */
+    public void SetCanMove(bool canMove)
+    {
+        _canMove = canMove;
+
+        // Stop the player from previous movement and look input when disabling movement
+        _move = Vector3.zero;
+        _look = Vector2.zero;
+        _sprintHeld = false;
     }
 }
