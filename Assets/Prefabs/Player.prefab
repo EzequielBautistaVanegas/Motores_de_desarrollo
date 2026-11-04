@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 818342664210249966}
   - component: {fileID: 4207047631203701502}
   - component: {fileID: 735140141553138864}
-  - component: {fileID: 8957940914694328026}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -170,7 +169,7 @@ MonoBehaviour:
     m_ActionName: 'Player/Sprint[/Keyboard/leftShift]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8957940914694328026}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Interaction, Assembly-CSharp
         m_MethodName: OnInteract
         m_Mode: 0
@@ -228,27 +227,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   _walkSpeed: 5
   _sprintSpeed: 10
-  _rotateSpeed: 10
+  _rotateSpeed: 5
   _cameraTransform: {fileID: 9196471794939105967}
   maxLookAngle: 30
   minLookAngle: 0
   _gravity: -9.81
---- !u!114 &8957940914694328026
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 305188975395340811}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1747e9ead66532d44be95c4bbd0fba8f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Interaction
-  interactionDistance: 1.5
-  interactiveLayer:
-    serializedVersion: 2
-    m_Bits: 8
 --- !u!1 &7791206039511457682
 GameObject:
   m_ObjectHideFlags: 0
