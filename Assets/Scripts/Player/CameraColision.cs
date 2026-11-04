@@ -32,7 +32,7 @@ public class CameraCollision : MonoBehaviour
             targetT = hit.distance / maxDist;
         }
 
-        // Se acerca al instante y se aleja suave
+        // Closes the gap fast and opens it slowly
         _currentT = targetT < _currentT
             ? targetT
             : Mathf.Lerp(_currentT, targetT, Time.deltaTime * _smooth);

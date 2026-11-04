@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 /* REQUIRES */
 [RequireComponent(typeof(CharacterController))]
@@ -12,6 +13,7 @@ public class Movement : MonoBehaviour
     [SerializeField] private float _walkSpeed = 5f;
     [SerializeField] private float _sprintSpeed = 10f;
     [SerializeField] private float _maxStamina = 100;
+    [SerializeField] private float _staminaRegenRate = 15f;
 
     [Header("Rotation")]
     [SerializeField] private float _rotateSpeed = 10f;
@@ -26,8 +28,9 @@ public class Movement : MonoBehaviour
     [Header("Physics")]
     [SerializeField] private float _gravity = -9.81f;
 
-    [Header("Animation")]
-    [SerializeField] private float dampTime = 0.15f;
+    [Header("Auto Approach")]
+    [SerializeField] private float _approachTurnSpeed = 360f;   // grados por segundo
+    [SerializeField] private float _approachTimeout = 1.5f;
 
     /* VARIABLES | IN CODE */
     private float _speed;
@@ -36,13 +39,60 @@ public class Movement : MonoBehaviour
     private bool _sprintHeld;
     private bool _canMove = true;
     public bool CanMove => _canMove;
+    public bool IsSprinting { get; private set; }
+    public bool IsGrounded => _controller.isGrounded;
+    public Vector2 MoveInput => IsBusy ? _autoMoveInput : new Vector2(_move.x, _move.z);
     private Vector3 _move;
     private Vector2 _look;
+    private Vector2 _autoMoveInput;
     private CharacterController _controller;
     private PlayerInput _input;
     private Animator _animator;
     private GameObject _playerModel;
     private Quaternion targetRotation;
+    public bool IsBusy { get; private set; }
+    private Vector3 MoveValue => IsBusy ? Vector3.zero : _move;
+    public void SetBusy(bool busy) => IsBusy = busy;
+    public IEnumerator MoveTo(Vector3 targetPos, Vector3 lookAt)
+    {
+        const float arriveDist = 0.05f;
+
+        targetPos.y = transform.position.y;
+        Vector3 look = lookAt - targetPos;
+        look.y = 0f;
+        Quaternion targetRot = Quaternion.LookRotation(look);
+
+        float timer = 0f;
+
+        while (timer < _approachTimeout)
+        {
+            timer += Time.deltaTime;
+
+            Vector3 toTarget = targetPos - transform.position;
+            toTarget.y = 0f;
+            float dist = toTarget.magnitude;
+
+            bool arrived = dist < arriveDist;
+            bool facing = Quaternion.Angle(transform.rotation, targetRot) < 2f;
+            if (arrived && facing) break;
+
+            // Move at the walk speed
+            Vector3 step = Vector3.ClampMagnitude(toTarget, _walkSpeed * Time.deltaTime);
+            _controller.Move(step);
+
+            // Turn towards the target
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation, targetRot, _approachTurnSpeed * Time.deltaTime);
+
+            // Fake the input to make the player walk with the animation
+            Vector3 local = arrived ? Vector3.zero : transform.InverseTransformDirection(toTarget / dist);
+            _autoMoveInput = new Vector2(local.x, local.z);
+
+            yield return null;
+        }
+
+        _autoMoveInput = Vector2.zero;
+    }
 
     private void Awake()
     {
@@ -71,11 +121,11 @@ public class Movement : MonoBehaviour
     /* MOVEMENT METHOD */
     private void HandleMovement()
     {
-        Vector3 moveDir = transform.forward * _move.z + transform.right * _move.x;
+        Vector3 moveDir = transform.forward * MoveValue.z + transform.right * MoveValue.x;
         moveDir = Vector3.ClampMagnitude(moveDir, 1f);
 
         // Check if the player is moving forward to apply the sprint
-        if (_move.z <= 0)
+        if (MoveValue.z <= 0)
         {
             _speed = _walkSpeed;
         }
@@ -94,7 +144,7 @@ public class Movement : MonoBehaviour
         _controller.Move(velocity * Time.deltaTime);
 
         // Rotate the player model to face the movement direction just on the X
-        if (Mathf.Abs(_move.x) > 0.01f && Mathf.Abs(_move.z) < 0.01f)
+        if (Mathf.Abs(MoveValue.x) > 0.01f && Mathf.Abs(MoveValue.z) < 0.01f)
         {
             targetRotation = Quaternion.LookRotation(moveDir, Vector3.up) * Quaternion.Euler(0f, lookDeviation, 0f);
         }
@@ -105,37 +155,45 @@ public class Movement : MonoBehaviour
 
         _playerModel.transform.rotation = Quaternion.Slerp(
             _playerModel.transform.rotation, targetRotation, Time.deltaTime * _modelTurnSpeed);
-
-        // Animate the player based on movement input
-        _animator.SetFloat("direction", _move.z, dampTime, Time.deltaTime);
-        _animator.SetFloat("orientation", _move.x, dampTime, Time.deltaTime);
-        _animator.SetBool("isWalking", moveDir.sqrMagnitude > 0.01f);
     }
 
     /* SPRINT METHOD */
     private void HandleSprint()
     {
-        bool isSprinting = _sprintHeld && _move.z > 0.1f && _stamina > 0;
+        bool sprinting = _sprintHeld && MoveValue.z > 0.1f;
 
-        // Stamina management
-        if (isSprinting)
+        if (sprinting != IsSprinting)
         {
-            _stamina = Mathf.Max(_stamina - 1 * Time.deltaTime * 10, 0);
-            OnStaminaChanged?.Invoke(_stamina, _maxStamina);
-        }
-        else if (!_sprintHeld && _stamina < _maxStamina)
-        {
-            _stamina = Mathf.Min(_stamina + 1 * Time.deltaTime * 10, _maxStamina);
-            OnStaminaChanged?.Invoke(_stamina, _maxStamina);
+            IsSprinting = sprinting;
+            SprintChanged?.Invoke(sprinting);
         }
 
-        _speed = isSprinting ? _sprintSpeed : _walkSpeed;
-        _animator.SetBool("isRunning", isSprinting);
+        // Handle stamina consumption and regeneration
+        if (sprinting && _stamina > 0f)
+        {
+            _stamina -= _staminaRegenRate * Time.deltaTime;
+
+            if (_stamina < 0f) _stamina = 0f;
+
+            OnStaminaChanged?.Invoke(_stamina, _maxStamina);
+
+        }
+        else if (_stamina < _maxStamina)
+        {
+            _stamina += _staminaRegenRate * Time.deltaTime;
+
+            if (_stamina > _maxStamina) _stamina = _maxStamina;
+
+            OnStaminaChanged?.Invoke(_stamina, _maxStamina);
+        }
+
+        _speed = sprinting ? _sprintSpeed : _walkSpeed;
     }
 
     /* LOOK METHOD */
     private void HandleLook()
     {
+        if (IsBusy) return;
         float mouseX = _look.x * _rotateSpeed;
         float mouseY = _look.y * _rotateSpeed;
         transform.Rotate(Vector3.up * mouseX);
@@ -152,8 +210,9 @@ public class Movement : MonoBehaviour
         }
     }
 
-    /* HUD ACTIONS */
+    /* ACTIONS EVENTS */
     public static Action<float, float> OnStaminaChanged;
+    public event Action<bool> SprintChanged;
 
     /* INPUT EVENTS */
     public void OnMovement(InputAction.CallbackContext context)

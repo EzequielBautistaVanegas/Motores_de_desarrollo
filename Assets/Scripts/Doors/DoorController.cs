@@ -19,6 +19,10 @@ public class DoorController : MonoBehaviour, IInteractable
     [SerializeField] private List<CodeController> codeNums;
     [Header("Prompt Configuration")]
     [SerializeField] private Transform _promptAnchor;
+    [Header("Animation Configuration")]
+    [SerializeField] private float interactDelay = 0.4f;
+    [SerializeField] private Transform[] _openPoints;
+    [SerializeField] private Transform[] _closePoints;
 
 
     /* Variables In code */
@@ -28,8 +32,31 @@ public class DoorController : MonoBehaviour, IInteractable
     private Vector3 leftVector, rightVector;
     private ConfirmCode confirmCode = new ConfirmCode();
     private string code;
-    public string Prompt => isOpen ? "Abrir" : "Cerrar";
+    public string Prompt => WillOpen ? "Abrir" : "Cerrar";
+    public string AnimTrigger => WillOpen ? "Open" : "Close";
     public Transform PromptAnchor => _promptAnchor != null ? _promptAnchor : transform;
+    private float _moveStartTime;
+    private bool WillOpen => isOpen;
+
+    public Transform GetStandPoint(Vector3 playerPos)
+    {
+        Transform[] points = WillOpen ? _openPoints : _closePoints;
+        return Closest(points, playerPos);
+    }
+
+    private static Transform Closest(Transform[] points, Vector3 from)
+    {
+        Transform closest = null;
+        float best = float.MaxValue;
+
+        foreach (Transform p in points)
+        {
+            if (p == null) continue;
+            float d = (p.position - from).sqrMagnitude;
+            if (d < best) { best = d; closest = p; }
+        }
+        return closest;
+    }
 
     private void Awake()
     {
@@ -43,6 +70,7 @@ public class DoorController : MonoBehaviour, IInteractable
         // Set the Start Status
         if (!gameObject.CompareTag("SafeBox")) Interact();
         else isOpen = !isOpen; // Toggle the door status
+        _moveStartTime = 0f;
     }
 
     private Vector3 SetAxis(Vector3 vector, RotationAxis axis, float value)
@@ -91,12 +119,15 @@ public class DoorController : MonoBehaviour, IInteractable
             rotationRightTarget = Quaternion.Euler(rightVector);
         }
 
+        _moveStartTime = Time.time + interactDelay;
         isOpen = !isOpen; // Toggle the door status
     }
 
     /* Smooth Doors Movement */
     private void Update()
     {
+        if (Time.time < _moveStartTime) return; // Wait for the delay before starting the door movement
+
         if (leftDoor != null)
         {
             leftDoor.localRotation = Quaternion.RotateTowards(

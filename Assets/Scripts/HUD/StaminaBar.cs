@@ -19,5 +19,6 @@ public class StaminaBar : MonoBehaviour
     {
         float staminaPercent = currentStamina / maxStamina;
         fill.fillAmount = staminaPercent;
+        Debug.Log($"Stamina updated: {currentStamina}/{maxStamina} ({staminaPercent * 100f}%)");
     }
 }

@@ -13,7 +13,9 @@ public class CodeController : MonoBehaviour, IInteractable
     private Transform pivot;
     private Quaternion rotationTarget;
     public string Prompt => _prompt;
+    public string AnimTrigger => null;
     public Transform PromptAnchor => _promptAnchor != null ? _promptAnchor : transform;
+    public Transform GetStandPoint(Vector3 playerPos) => null;
 
     private void Awake()
     {

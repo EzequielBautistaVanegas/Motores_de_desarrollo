@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class Interaction : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class Interaction : MonoBehaviour
     private IInteractable _current;
     private IInteractable _active;
     public static event Action<IInteractable> OnTargetChanged;
+    public static event Action<string, bool> OnInteractAnimation;
 
     private void Update()
     {
@@ -50,12 +52,37 @@ public class Interaction : MonoBehaviour
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if (!context.performed) return;
+        if (!context.performed || _movement.IsBusy) return;
 
         IInteractable target = _active ?? _current;
         if (target == null) return;
 
-        target?.Interact();
+        Transform stand = target.GetStandPoint(transform.position);
+
+        if (stand != null && !string.IsNullOrEmpty(target.AnimTrigger))
+            StartCoroutine(InteractRoutine(target, stand));
+        else
+            DoInteract(target);
+    }
+
+    private IEnumerator InteractRoutine(IInteractable target, Transform stand)
+    {
+        _movement.SetBusy(true);
+        yield return _movement.MoveTo(stand.position, target.PromptAnchor.position);
+        DoInteract(target, stand);
+    }
+
+    private void DoInteract(IInteractable target, Transform stand = null)
+    {
+        string trigger = target.AnimTrigger;
+
+        StandPoint point = stand != null ? stand.GetComponent<StandPoint>() : null;
+        bool mirror = point != null && point.UseHand == StandPoint.Hand.Right;
+
+        target.Interact();
         _active = _movement.CanMove ? null : target;
+
+        if (!string.IsNullOrEmpty(trigger)) OnInteractAnimation?.Invoke(trigger, mirror);
+        if (_current != null) OnTargetChanged?.Invoke(_current);
     }
 }
