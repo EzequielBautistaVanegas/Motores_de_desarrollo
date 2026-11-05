@@ -230,11 +230,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Movement
   _walkSpeed: 5
   _sprintSpeed: 10
+  _maxStamina: 100
+  _staminaDrainRate: 20
+  _staminaRegenRate: 15
   _rotateSpeed: 10
   _cameraTransform: {fileID: 9196471794939105967}
   maxLookAngle: 30
   minLookAngle: 0
   _gravity: -9.81
+  _approachTurnSpeed: 360
+  _approachTimeout: 1.5
 --- !u!114 &7151320742944281946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,12 +252,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c7d9e08e8c4fd94fbc4278b1d8ecc0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player_Interaction
-  interactionDistance: 2.5
+  interactionDistance: 1.5
   playerEye: 0.6
   interactiveLayer:
     serializedVersion: 2
     m_Bits: 8
   cameraTransform: {fileID: 9196471794939105967}
+  movement: {fileID: 2850996028280904253}
+  maxBusyTime: 3
 --- !u!114 &3390295543785431675
 MonoBehaviour:
   m_ObjectHideFlags: 0

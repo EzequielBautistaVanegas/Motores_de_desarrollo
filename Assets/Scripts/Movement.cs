@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -26,6 +27,10 @@ public class Movement : MonoBehaviour
     [Header("Physics")]
     [SerializeField] private float _gravity = -9.81f;
 
+    [Header("Auto Approach (acercarse a puertas)")]
+    [SerializeField] private float _approachTurnSpeed = 360f;   // grados por segundo
+    [SerializeField] private float _approachTimeout = 1.5f;     // por si algo bloquea el camino
+
     private CharacterController _controller;
     private float _speed;
     private float _verticalVelocity;
@@ -35,10 +40,20 @@ public class Movement : MonoBehaviour
     private bool _canMove = true;
     private bool _isSprinting = false;
     private float _currentStamina;
+    private Vector2 _autoMoveInput;
 
-    public Vector2 MoveInput => new Vector2(_move.x, _move.z);
+    public bool CanMove => _canMove;
+    public bool IsBusy { get; private set; }
+
+    // El input se sigue leyendo siempre; solo se ignora mientras está bloqueado.
+    // (Si se cortara en OnMovement, al desbloquear no camina hasta soltar y volver a apretar)
+    private bool InputBlocked => !_canMove || IsBusy;
+    private Vector3 MoveValue => InputBlocked ? Vector3.zero : _move;
+
+    // Mientras se acerca solo a la puerta, el blend tree recibe el input "automático"
+    public Vector2 MoveInput => IsBusy ? _autoMoveInput : new Vector2(MoveValue.x, MoveValue.z);
+
     public System.Action<bool> SprintChanged;
-
     public static System.Action<float, float> OnStaminaChanged;
 
     private void Awake()
@@ -66,7 +81,7 @@ public class Movement : MonoBehaviour
 
     private void HandleStamina()
     {
-        bool isMoving = _move.sqrMagnitude > 0.01f;
+        bool isMoving = MoveValue.sqrMagnitude > 0.01f;
 
         if (_isSprinting && isMoving && _currentStamina > 0f)
         {
@@ -100,27 +115,24 @@ public class Movement : MonoBehaviour
 
     private void HandleMovement()
     {
-        if (!_canMove) return;
-
-        Vector3 move = transform.forward * _move.z + transform.right * _move.x;
+        // Sin "return" cuando está bloqueado: la gravedad tiene que seguir funcionando
+        Vector3 input = MoveValue;
+        Vector3 move = transform.forward * input.z + transform.right * input.x;
         move = move.normalized * _speed;
 
-        if (!_controller.isGrounded)
+        if (_controller.isGrounded && _verticalVelocity < 0f)
         {
-            _verticalVelocity += _gravity * Time.deltaTime;
-            move.y = _verticalVelocity;
+            _verticalVelocity = -2f; // pequeño empuje para que isGrounded no parpadee
         }
-        else
-        {
-            _verticalVelocity = 0f;
-        }
+        _verticalVelocity += _gravity * Time.deltaTime;
+        move.y = _verticalVelocity;
 
         _controller.Move(move * Time.deltaTime);
     }
 
     private void HandleLook()
     {
-        if (!_canMove) return;
+        if (InputBlocked) return;
 
         float mouseX = _look.x * _rotateSpeed * Time.deltaTime;
         float mouseY = _look.y * _rotateSpeed * Time.deltaTime;
@@ -152,7 +164,7 @@ public class Movement : MonoBehaviour
         if (context.performed)
         {
             _isSprinting = true;
-            if (_currentStamina > 0f)
+            if (_currentStamina > 0f && !IsBusy)
             {
                 _speed = _sprintSpeed;
                 SprintChanged?.Invoke(true);
@@ -170,5 +182,57 @@ public class Movement : MonoBehaviour
     public void SetCanMove(bool canMove)
     {
         _canMove = canMove;
+    }
+
+    public void SetBusy(bool busy)
+    {
+        if (IsBusy == busy) return;
+        IsBusy = busy;
+
+        // No mostrar la animación de correr mientras se acerca o abre la puerta
+        if (busy) SprintChanged?.Invoke(false);
+        else if (_isSprinting && _currentStamina > 0f) SprintChanged?.Invoke(true);
+    }
+
+    // Camina solo hasta targetPos (a velocidad de caminata) y gira para mirar lookAt
+    public IEnumerator MoveTo(Vector3 targetPos, Vector3 lookAt)
+    {
+        const float arriveDist = 0.05f;
+
+        targetPos.y = transform.position.y;
+        Vector3 look = lookAt - targetPos;
+        look.y = 0f;
+        Quaternion targetRot = look.sqrMagnitude > 0.0001f ? Quaternion.LookRotation(look) : transform.rotation;
+
+        float timer = 0f;
+
+        while (timer < _approachTimeout)
+        {
+            timer += Time.deltaTime;
+
+            Vector3 toTarget = targetPos - transform.position;
+            toTarget.y = 0f;
+            float dist = toTarget.magnitude;
+
+            bool arrived = dist < arriveDist;
+            bool facing = Quaternion.Angle(transform.rotation, targetRot) < 2f;
+            if (arrived && facing) break;
+
+            // Mover a velocidad de caminata
+            Vector3 step = Vector3.ClampMagnitude(toTarget, _walkSpeed * Time.deltaTime);
+            _controller.Move(step);
+
+            // Girar hacia la puerta
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation, targetRot, _approachTurnSpeed * Time.deltaTime);
+
+            // Input "falso" para el blend tree, relativo a hacia dónde mira el player
+            Vector3 local = arrived ? Vector3.zero : transform.InverseTransformDirection(toTarget / dist);
+            _autoMoveInput = new Vector2(local.x, local.z);
+
+            yield return null;
+        }
+
+        _autoMoveInput = Vector2.zero;
     }
 }

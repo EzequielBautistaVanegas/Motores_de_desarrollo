@@ -25,11 +25,24 @@ public class Common_Door : MonoBehaviour, IInteractable
     [Header("Prompt Configuration")]
     [SerializeField] private Transform _promptAnchor;
 
+    [Header("Animación del personaje")]
+    [Tooltip("Segundos desde que arranca la animación hasta que la mano toca la puerta")]
+    [SerializeField] private float interactDelay = 0.4f;
+    [SerializeField] private string openTrigger = "Open";
+    [SerializeField] private string closeTrigger = "Close";
+
+    [Header("Puntos de parada (NO pueden ser hijos de esta puerta, porque gira)")]
+    [SerializeField] private Transform openPointFront;
+    [SerializeField] private Transform openPointBack;
+    [SerializeField] private Transform closePointFront;   // opcional: si falta, usa el de abrir
+    [SerializeField] private Transform closePointBack;    // opcional: si falta, usa el de abrir
+
     [Header("Debug - Estado")]
     [SerializeField] private bool isOpen = false;
 
     private bool isAnimating = false;
     private Quaternion closedRotation;
+    private Transform cachedPlayer;
 
     public string Prompt
     {
@@ -40,17 +53,9 @@ public class Common_Door : MonoBehaviour, IInteractable
                 return ItemHUD.HasKey ? openPrompt : lockedPrompt;
             }
 
-            if (!isOpen && isOneWay)
+            if (!isOpen && IsBlockedByOneWay(GetPlayerTransform()))
             {
-                Transform playerTransform = GetPlayerTransform();
-                if (playerTransform != null)
-                {
-                    bool isPlayerInFront = CheckIfPlayerInFront(playerTransform);
-                    if ((onlyFromFront && !isPlayerInFront) || (!onlyFromFront && isPlayerInFront))
-                    {
-                        return lockedPrompt;
-                    }
-                }
+                return lockedPrompt;
             }
 
             return isOpen ? closePrompt : openPrompt;
@@ -58,15 +63,33 @@ public class Common_Door : MonoBehaviour, IInteractable
     }
 
     public Transform PromptAnchor => _promptAnchor != null ? _promptAnchor : transform;
-    public string AnimTrigger => "Interact";
+    public string AnimTrigger => isOpen ? closeTrigger : openTrigger;
+
+    public bool CanInteract(Transform player)
+    {
+        if (!enabled || isAnimating) return false;
+        if (isLocked && !ItemHUD.HasKey) return false;
+
+        if (player == null) player = GetPlayerTransform();
+        if (!isOpen && IsBlockedByOneWay(player)) return false;
+
+        return true;
+    }
 
     public Transform GetStandPoint(Vector3 playerPos)
     {
-        return transform;
+        bool front = IsInFront(playerPos);
+
+        Transform openPoint = front ? openPointFront : openPointBack;
+        if (!isOpen) return openPoint;
+
+        Transform closePoint = front ? closePointFront : closePointBack;
+        return closePoint != null ? closePoint : openPoint;
     }
 
-    private void Start()
+    private void Awake()
     {
+        // En Awake (no Start) para que IsInFront funcione aunque se consulte antes
         closedRotation = transform.localRotation;
     }
 
@@ -89,10 +112,10 @@ public class Common_Door : MonoBehaviour, IInteractable
 
         if (isOpen)
         {
-            CloseDoor();
+            CloseDoor(interactDelay);
             if (linkDoor != null && linkDoor.isOpen)
             {
-                linkDoor.CloseDoor();
+                linkDoor.CloseDoor(interactDelay);
             }
             return;
         }
@@ -102,23 +125,20 @@ public class Common_Door : MonoBehaviour, IInteractable
             playerTransform = GetPlayerTransform();
         }
 
-        bool isPlayerInFront = CheckIfPlayerInFront(playerTransform);
-
-        if (isOneWay)
+        if (IsBlockedByOneWay(playerTransform))
         {
-            if ((onlyFromFront && !isPlayerInFront) || (!onlyFromFront && isPlayerInFront))
-            {
-                Debug.Log("Puerta Trabada");
-                return;
-            }
+            Debug.Log("Puerta Trabada");
+            return;
         }
 
+        bool isPlayerInFront = playerTransform == null || IsInFront(playerTransform.position);
+
         float primaryAngle = isPlayerInFront ? -openAngle : openAngle;
-        OpenDoorWithAngle(primaryAngle);
+        OpenDoorWithAngle(primaryAngle, interactDelay);
 
         if (linkDoor != null)
         {
-            linkDoor.OpenDoorWithAngle(-primaryAngle);
+            linkDoor.OpenDoorWithAngle(-primaryAngle, interactDelay);
         }
     }
 
@@ -148,43 +168,62 @@ public class Common_Door : MonoBehaviour, IInteractable
 
     private Transform GetPlayerTransform()
     {
-        if (Camera.main != null)
+        // Primero el player: con cámara sobre el hombro, la cámara puede quedar
+        // del otro lado de la puerta aunque el personaje no
+        if (cachedPlayer == null)
         {
-            return Camera.main.transform;
+            GameObject playerObj = GameObject.FindWithTag("Player");
+            if (playerObj != null) cachedPlayer = playerObj.transform;
         }
 
-        GameObject playerObj = GameObject.FindWithTag("Player");
-        return playerObj != null ? playerObj.transform : null;
+        if (cachedPlayer != null) return cachedPlayer;
+        return Camera.main != null ? Camera.main.transform : null;
     }
 
-    private bool CheckIfPlayerInFront(Transform playerTransform)
+    private bool IsBlockedByOneWay(Transform player)
     {
-        if (playerTransform == null) return true;
+        if (!isOneWay || player == null) return false;
 
-        Vector3 localPlayerPos = transform.InverseTransformPoint(playerTransform.position);
-        if (facingAxis == FacingAxis.Local_Y) return localPlayerPos.y > 0;
-        if (facingAxis == FacingAxis.Local_X) return localPlayerPos.x > 0;
-        return localPlayerPos.z > 0;
+        bool inFront = IsInFront(player.position);
+        return onlyFromFront ? !inFront : inFront;
     }
 
-    public void OpenDoorWithAngle(float angle)
+    // Se calcula respecto de la puerta CERRADA, así da bien aunque esté abierta
+    private bool IsInFront(Vector3 worldPos)
+    {
+        Vector3 pos = transform.parent != null ? transform.parent.InverseTransformPoint(worldPos) : worldPos;
+        Vector3 rel = Quaternion.Inverse(closedRotation) * (pos - transform.localPosition);
+
+        switch (facingAxis)
+        {
+            case FacingAxis.Local_Y: return rel.y > 0;
+            case FacingAxis.Local_X: return rel.x > 0;
+            default: return rel.z > 0;
+        }
+    }
+
+    public void OpenDoorWithAngle(float angle, float delay = 0f)
     {
         if (isAnimating) return;
         Quaternion targetRotation = closedRotation * Quaternion.AngleAxis(angle, rotationAxis);
-        StartCoroutine(AnimateDoor(targetRotation));
+        StartCoroutine(AnimateDoor(targetRotation, delay));
         isOpen = true;
     }
 
-    public void CloseDoor()
+    public void CloseDoor(float delay = 0f)
     {
         if (isAnimating) return;
-        StartCoroutine(AnimateDoor(closedRotation));
+        StartCoroutine(AnimateDoor(closedRotation, delay));
         isOpen = false;
     }
 
-    private IEnumerator AnimateDoor(Quaternion targetRotation)
+    private IEnumerator AnimateDoor(Quaternion targetRotation, float delay)
     {
         isAnimating = true;
+
+        // Esperar a que la mano llegue a la puerta
+        if (delay > 0f) yield return new WaitForSeconds(delay);
+
         Quaternion startRotation = transform.localRotation;
         float time = 0f;
 

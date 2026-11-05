@@ -416,6 +416,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &17198700
 BoxCollider:
@@ -834,184 +841,6 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
---- !u!43 &36480546
-Mesh:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-3164
-  serializedVersion: 12
-  m_SubMeshes:
-  - serializedVersion: 2
-    firstByte: 0
-    indexCount: 84
-    topology: 0
-    baseVertex: 0
-    firstVertex: 0
-    vertexCount: 48
-    localAABB:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
-  m_Shapes:
-    vertices: []
-    shapes: []
-    channels: []
-    fullWeights: []
-  m_BindPose: []
-  m_BoneNameHashes: 
-  m_RootBoneNameHash: 0
-  m_BonesAABB: []
-  m_VariableBoneCountWeights:
-    m_Data: 
-  m_MeshCompression: 0
-  m_IsReadable: 1
-  m_KeepVertices: 1
-  m_KeepIndices: 1
-  m_IndexFormat: 0
-  m_IndexBuffer: 000001000200010003000200040005000600050007000600080009000a0009000b000a000c000d000e000d000f000e001000110012001100130012001700150016001400150017001d001e0018001e001f001800180019001d0019001c001d0019001a001c001a001b001c001e001a001f001e001b001a00200021002200210023002200240025002600250027002600280029002a0029002b002a002c002d002e002d002f002e00
-  m_VertexData:
-    serializedVersion: 3
-    m_VertexCount: 48
-    m_Channels:
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 3
-    - stream: 0
-      offset: 12
-      format: 0
-      dimension: 3
-    - stream: 0
-      offset: 24
-      format: 0
-      dimension: 4
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 40
-      format: 0
-      dimension: 2
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    m_DataSize: 2304
-    _typelessdata: 000000bf000000bf0000003f00000000000000000000803f000080bf0000000000000000000080bf0000803f000000000000003f000000bf0000003f00000000000000000000803f000080bf0000000000000000000080bf0000000000000000000000bf0000003f0000003f00000000000000000000803f000080bf0000000000000000000080bf0000803f0000803f0000003f0000003f0000003f00000000000000000000803f000080bf0000000000000000000080bf000000000000803f0000003f000000bf0000003f0000803f000000000000000000000000000000000000803f000080bf0000803f000000000000003f000000bf000000bf0000803f000000000000000000000000000000000000803f000080bf00000000000000000000003f0000003f0000003f0000803f000000000000000000000000000000000000803f000080bf0000803f0000803f0000003f0000003f000000bf0000803f000000000000000000000000000000000000803f000080bf000000000000803f000000bf000000bf000000bf000080bf00000000000000000000000000000000000080bf000080bf0000803f00000000000000bf000000bf0000003f000080bf00000000000000000000000000000000000080bf000080bf0000000000000000000000bf0000003f000000bf000080bf00000000000000000000000000000000000080bf000080bf0000803f0000803f000000bf0000003f0000003f000080bf00000000000000000000000000000000000080bf000080bf000000000000803f000000bf0000003f0000003f000000000000803f000000000000803f0000000000000000000080bf000000000000803f0000003f0000003f0000003f000000000000803f000000000000803f0000000000000000000080bf0000803f0000803f000000bf0000003f000000bf000000000000803f000000000000803f0000000000000000000080bf00000000000000000000003f0000003f000000bf000000000000803f000000000000803f0000000000000000000080bf0000803f00000000000000bf000000bf000000bf00000000000080bf00000000000080bf0000000000000000000080bf0000803f000000000000003f000000bf000000bf00000000000080bf00000000000080bf0000000000000000000080bf0000000000000000000000bf000000bf0000003f00000000000080bf00000000000080bf0000000000000000000080bf0000803f0000803f0000003f000000bf0000003f00000000000080bf00000000000080bf0000000000000000000080bf000000000000803f9052d5be80cfd13e3965c23e0000000000000000000080bf0000803f0000000000000000000080bf9052d5be80cfd13e3cc8d53e80cfd13e3965c23e0000000000000000000080bf0000803f0000000000000000000080bf3cc8d53e80cfd13e0293d33e30a8d2be3965c23e0000000000000000000080bf0000803f0000000000000000000080bf0293d33e30a8d2bef6d7d0bee0cdd2be3965c23e0000000000000000000080bf0000803f0000000000000000000080bff6d7d0bee0cdd2be9052d5be80cfd13efdffffbe7730c234955230b5000080bf0000803f9552301f7730c234000080bf9052d5be80cfd13ef6d7d0bee0cdd2befdffffbe3dec3735cd63b734000080bf0000803f000000003dec3735000080bff6d7d0bee0cdd2be0293d33e30a8d2befdffffbedb5b0eb55c210835000080bf0000803f5c21081fdb5b0eb5000080bf0293d33e30a8d2be0000003f000000bf000000bf554c0ab51f800735000080bf0000803f00000000554c0ab5000080bf0000003f000000bf000000bf000000bf000000bf03a8ad34a3fe3435000080bf0000803f0000000003a8ad34000080bf000000bf000000bf000000bf0000003f000000bf5df43735e749afb4000080bf0000803f000000005df43735000080bf000000bf0000003f0000003f0000003f000000bfc2550eb511a204b5000080bf0000803f00000000c2550eb5000080bf0000003f0000003f3cc8d53e80cfd13efdffffbe305f12b5af3f04b5000080bf0000803f00000000305f12b5000080bf3cc8d53e80cfd13e3cc8d53e80cfd13efdffffbe19ff7fbfcc10ac3b000000000000000000000000000080bf000080bffdffff3e24eed23e0293d33e30a8d2befdffffbe19ff7fbfcc10ac3b000000000000000000000000000080bf000080bffdffff3e098bd1be3cc8d53e80cfd13e3965c23e19ff7fbfcc10ac3b000000000000000000000000000080bf000080bf3965c2be24eed23e0293d33e30a8d2be3965c23e19ff7fbfcc10ac3b000000000000000000000000000080bf000080bf3965c2be098bd1be0293d33e30a8d2befdffffbeb996b7b9ffff7f3f00000000ffff7f3fb996b73900000000000080bf1f80d33efdffffbef6d7d0bee0cdd2befdffffbeb996b7b9ffff7f3f00000000ffff7f3fb996b73900000000000080bfdbead0befdffffbe0293d33e30a8d2be3965c23eb996b7b9ffff7f3f00000000ffff7f3fb996b73900000000000080bf1f80d33e3965c23ef6d7d0bee0cdd2be3965c23eb996b7b9ffff7f3f00000000ffff7f3fb996b73900000000000080bfdbead0be3965c23e9052d5be80cfd13efdffffbe00000000000080bf00000000000080bf0000000000000000000080bf9052d53efdffffbe3cc8d53e80cfd13efdffffbe00000000000080bf00000000000080bf0000000000000000000080bf3cc8d5befdffffbe9052d5be80cfd13e3965c23e00000000000080bf00000000000080bf0000000000000000000080bf9052d53e3965c23e3cc8d53e80cfd13e3965c23e00000000000080bf00000000000080bf0000000000000000000080bf3cc8d5be3965c23ef6d7d0bee0cdd2befdffffbe49fc7f3f7b742e3c0000000000000000000000000000803f000080bffdffffbe8a91d0be9052d5be80cfd13efdffffbe49fc7f3f7b742e3c0000000000000000000000000000803f000080bffdffffbef111d43ef6d7d0bee0cdd2be3965c23e49fc7f3f7b742e3c0000000000000000000000000000803f000080bf3965c23e8a91d0be9052d5be80cfd13e3965c23e49fc7f3f7b742e3c0000000000000000000000000000803f000080bf3965c23ef111d43e
-  m_CompressedMesh:
-    m_Vertices:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UV:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Normals:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Tangents:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Weights:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_NormalSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_TangentSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_FloatColors:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_BoneIndices:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Triangles:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UVInfo: 0
-  m_LocalAABB:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
-  m_MeshUsageFlags: 0
-  m_CookingOptions: 30
-  m_BakedConvexCollisionMesh: 
-  m_BakedTriangleCollisionMesh: 
-  'm_MeshMetrics[0]': 1
-  'm_MeshMetrics[1]': 1
-  m_MeshOptimizationFlags: 1
-  m_StreamData:
-    serializedVersion: 2
-    offset: 0
-    size: 0
-    path: 
-  m_MeshLodInfo:
-    serializedVersion: 2
-    m_LodSelectionCurve:
-      serializedVersion: 1
-      m_LodSlope: 0
-      m_LodBias: 0
-    m_NumLevels: 1
-    m_SubMeshes:
-    - serializedVersion: 2
-      m_Levels:
-      - serializedVersion: 1
-        m_IndexStart: 0
-        m_IndexCount: 0
 --- !u!43 &45284630
 Mesh:
   m_ObjectHideFlags: 0
@@ -1308,6 +1137,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &60410724
 BoxCollider:
@@ -1633,6 +1469,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &81367791
 BoxCollider:
@@ -1821,6 +1664,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &106657711
 BoxCollider:
@@ -2054,6 +1904,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &128554821
 BoxCollider:
@@ -2653,6 +2510,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 1
   _promptAnchor: {fileID: 1074743359}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!1 &204825604
 GameObject:
@@ -2763,6 +2627,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &205676258
 BoxCollider:
@@ -3092,6 +2963,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &230791440
 BoxCollider:
@@ -3388,6 +3266,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &252984272
 BoxCollider:
@@ -3771,6 +3656,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &288160759
 BoxCollider:
@@ -4179,6 +4071,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &292784652
 BoxCollider:
@@ -5359,6 +5258,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 1
   _promptAnchor: {fileID: 1128811869}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &377633282
 BoxCollider:
@@ -5482,6 +5388,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 1152521926}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &380208334
 BoxCollider:
@@ -5850,6 +5763,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &405610443
 BoxCollider:
@@ -6010,6 +5930,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &410200047
 BoxCollider:
@@ -7155,6 +7082,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &524698627
 BoxCollider:
@@ -7626,6 +7560,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &563900638
 BoxCollider:
@@ -8599,6 +8540,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &630184306
 BoxCollider:
@@ -9136,6 +9084,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &690010942
 BoxCollider:
@@ -10178,6 +10133,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &822472350
 BoxCollider:
@@ -11221,6 +11183,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &915959539
 BoxCollider:
@@ -11422,6 +11391,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &954875260
 BoxCollider:
@@ -13192,6 +13168,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &1096983863
 BoxCollider:
@@ -13362,6 +13345,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &1101453993
 BoxCollider:
@@ -13501,6 +13491,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &1101804070
 BoxCollider:
@@ -15279,6 +15276,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &1262821229
 BoxCollider:
@@ -15594,6 +15598,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &1279226739
 BoxCollider:
@@ -16086,6 +16097,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &1325802349
 BoxCollider:
@@ -16313,8 +16331,15 @@ MonoBehaviour:
   closePrompt: Cerrar
   isOneWay: 0
   onlyFromFront: 0
-  facingAxis: 0
+  facingAxis: 1
   _promptAnchor: {fileID: 77724570}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &1329804730
 BoxCollider:
@@ -16470,6 +16495,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &1332282446
 BoxCollider:
@@ -16672,6 +16704,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &1353125518
 BoxCollider:
@@ -16911,6 +16950,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &1369400245
 BoxCollider:
@@ -17719,6 +17765,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &1436532241
 BoxCollider:
@@ -17912,6 +17965,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &1485109128
 BoxCollider:
@@ -18162,6 +18222,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &1506493355
 BoxCollider:
@@ -18774,6 +18841,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &1626003602
 BoxCollider:
@@ -19173,6 +19247,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &1647097345
 BoxCollider:
@@ -19752,6 +19833,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &1692511618
 BoxCollider:
@@ -21107,184 +21195,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!43 &1811251719
-Mesh:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-12654
-  serializedVersion: 12
-  m_SubMeshes:
-  - serializedVersion: 2
-    firstByte: 0
-    indexCount: 36
-    topology: 0
-    baseVertex: 0
-    firstVertex: 0
-    vertexCount: 24
-    localAABB:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
-  m_Shapes:
-    vertices: []
-    shapes: []
-    channels: []
-    fullWeights: []
-  m_BindPose: []
-  m_BoneNameHashes: 
-  m_RootBoneNameHash: 0
-  m_BonesAABB: []
-  m_VariableBoneCountWeights:
-    m_Data: 
-  m_MeshCompression: 0
-  m_IsReadable: 1
-  m_KeepVertices: 1
-  m_KeepIndices: 1
-  m_IndexFormat: 0
-  m_IndexBuffer: 000001000200010003000200040005000600050007000600080009000a0009000b000a000c000d000e000d000f000e00100011001200110013001200140015001600150017001600
-  m_VertexData:
-    serializedVersion: 3
-    m_VertexCount: 24
-    m_Channels:
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 3
-    - stream: 0
-      offset: 12
-      format: 0
-      dimension: 3
-    - stream: 0
-      offset: 24
-      format: 0
-      dimension: 4
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 40
-      format: 0
-      dimension: 2
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    m_DataSize: 1152
-    _typelessdata: 000000bf000000bf0000003f00000000000000000000803f000080bf0000000000000000000080bf0000803f000000000000003f000000bf0000003f00000000000000000000803f000080bf0000000000000000000080bf0000000000000000000000bf0000003f0000003f00000000000000000000803f000080bf0000000000000000000080bf0000803f0000803f0000003f0000003f0000003f00000000000000000000803f000080bf0000000000000000000080bf000000000000803f0000003f000000bf0000003f0000803f000000000000000000000000000000000000803f000080bf0000803f000000000000003f000000bf000000bf0000803f000000000000000000000000000000000000803f000080bf00000000000000000000003f0000003f0000003f0000803f000000000000000000000000000000000000803f000080bf0000803f0000803f0000003f0000003f000000bf0000803f000000000000000000000000000000000000803f000080bf000000000000803f0000003f000000bf000000bf0000000000000000000080bf0000803f0000000000000000000080bf0000803f00000000000000bf000000bf000000bf0000000000000000000080bf0000803f0000000000000000000080bf00000000000000000000003f0000003f000000bf0000000000000000000080bf0000803f0000000000000000000080bf0000803f0000803f000000bf0000003f000000bf0000000000000000000080bf0000803f0000000000000000000080bf000000000000803f000000bf000000bf000000bf000080bf00000000000000000000000000000000000080bf000080bf0000803f00000000000000bf000000bf0000003f000080bf00000000000000000000000000000000000080bf000080bf0000000000000000000000bf0000003f000000bf000080bf00000000000000000000000000000000000080bf000080bf0000803f0000803f000000bf0000003f0000003f000080bf00000000000000000000000000000000000080bf000080bf000000000000803f000000bf0000003f0000003f000000000000803f000000000000803f0000000000000000000080bf000000000000803f0000003f0000003f0000003f000000000000803f000000000000803f0000000000000000000080bf0000803f0000803f000000bf0000003f000000bf000000000000803f000000000000803f0000000000000000000080bf00000000000000000000003f0000003f000000bf000000000000803f000000000000803f0000000000000000000080bf0000803f00000000000000bf000000bf000000bf00000000000080bf00000000000080bf0000000000000000000080bf0000803f000000000000003f000000bf000000bf00000000000080bf00000000000080bf0000000000000000000080bf0000000000000000000000bf000000bf0000003f00000000000080bf00000000000080bf0000000000000000000080bf0000803f0000803f0000003f000000bf0000003f00000000000080bf00000000000080bf0000000000000000000080bf000000000000803f
-  m_CompressedMesh:
-    m_Vertices:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UV:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Normals:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Tangents:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Weights:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_NormalSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_TangentSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_FloatColors:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_BoneIndices:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Triangles:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UVInfo: 0
-  m_LocalAABB:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
-  m_MeshUsageFlags: 0
-  m_CookingOptions: 30
-  m_BakedConvexCollisionMesh: 
-  m_BakedTriangleCollisionMesh: 
-  'm_MeshMetrics[0]': 1
-  'm_MeshMetrics[1]': 1
-  m_MeshOptimizationFlags: 1
-  m_StreamData:
-    serializedVersion: 2
-    offset: 0
-    size: 0
-    path: 
-  m_MeshLodInfo:
-    serializedVersion: 2
-    m_LodSelectionCurve:
-      serializedVersion: 1
-      m_LodSlope: 0
-      m_LodBias: 0
-    m_NumLevels: 1
-    m_SubMeshes:
-    - serializedVersion: 2
-      m_Levels:
-      - serializedVersion: 1
-        m_IndexStart: 0
-        m_IndexCount: 0
 --- !u!1 &1812704467
 GameObject:
   m_ObjectHideFlags: 0
@@ -21345,6 +21255,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &1812704470
 BoxCollider:
@@ -21828,6 +21745,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerSkin
       objectReference: {fileID: 0}
+    - target: {fileID: 7151320742944281946, guid: 78227e26b1dc18a42994fdbee229cf9c, type: 3}
+      propertyPath: movement
+      value: 
+      objectReference: {fileID: 1890066665}
     - target: {fileID: 7151320742944281946, guid: 78227e26b1dc18a42994fdbee229cf9c, type: 3}
       propertyPath: interactionDistance
       value: 1.5
@@ -23185,6 +23106,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &2027312172
 BoxCollider:
@@ -23414,6 +23342,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &2045235337
 BoxCollider:
@@ -23616,6 +23551,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &2051779897
 BoxCollider:
@@ -24211,6 +24153,13 @@ MonoBehaviour:
   onlyFromFront: 0
   facingAxis: 0
   _promptAnchor: {fileID: 0}
+  interactDelay: 0.4
+  openTrigger: Open
+  closeTrigger: Close
+  openPointFront: {fileID: 0}
+  openPointBack: {fileID: 0}
+  closePointFront: {fileID: 0}
+  closePointBack: {fileID: 0}
   isOpen: 0
 --- !u!65 &2103271628
 BoxCollider:
@@ -24618,99 +24567,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 409b99896d025de4abfda4f925abaf1c, type: 3}
---- !u!1001 &8610065460203629207
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 98704462567318525, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 1811251719}
-    - target: {fileID: 98704462567318525, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: m_VersionIndex
-      value: 29
-      objectReference: {fileID: 0}
-    - target: {fileID: 1965414170761225128, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: m_Name
-      value: SafeBox
-      objectReference: {fileID: 0}
-    - target: {fileID: 4460261024700109682, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 36480546}
-    - target: {fileID: 4460261024700109682, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: m_VersionIndex
-      value: 224
-      objectReference: {fileID: 0}
-    - target: {fileID: 5897520488643834426, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 36480546}
-    - target: {fileID: 7845627654335869203, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 1811251719}
-    - target: {fileID: 8323584115087325559, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: 'codeNums.Array.data[0]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 8323584115087325559, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: 'codeNums.Array.data[1]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 8323584115087325559, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: 'codeNums.Array.data[2]'
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 8329430139173699810, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 273.056
-      objectReference: {fileID: 0}
-    - target: {fileID: 8329430139173699810, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 5.211
-      objectReference: {fileID: 0}
-    - target: {fileID: 8329430139173699810, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -65.8253
-      objectReference: {fileID: 0}
-    - target: {fileID: 8329430139173699810, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8329430139173699810, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8329430139173699810, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8329430139173699810, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8329430139173699810, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8329430139173699810, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8329430139173699810, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 581c6de6b2ae6004a962cc1d6d7029aa, type: 3}
 --- !u!1001 &8988476445918782236
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24824,7 +24680,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 832575519}
   - {fileID: 4676136066317317456}
-  - {fileID: 8610065460203629207}
   - {fileID: 1739153533}
   - {fileID: 1012948892}
   - {fileID: 8988476445918782236}
