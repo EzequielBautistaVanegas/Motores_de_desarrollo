@@ -13,6 +13,7 @@ public class KeypadUI : MonoBehaviour
     private string targetCode = "";
     private DesafioController currentSafeBox;
     private Movement playerMovement;
+    private bool isProcessingError = false;
 
     private void Awake()
     {
@@ -36,6 +37,7 @@ public class KeypadUI : MonoBehaviour
         currentSafeBox = safeBox;
         targetCode = code;
         currentInput = "";
+        isProcessingError = false;
         UpdateDisplay();
 
         if (panel != null) panel.SetActive(true);
@@ -53,6 +55,8 @@ public class KeypadUI : MonoBehaviour
 
     public void PressNumber(string number)
     {
+        if (isProcessingError) return;
+
         if (currentInput.Length < 6)
         {
             currentInput += number;
@@ -62,12 +66,15 @@ public class KeypadUI : MonoBehaviour
 
     public void ClearInput()
     {
+        if (isProcessingError) return;
         currentInput = "";
         UpdateDisplay();
     }
 
     public void ConfirmCode()
     {
+        if (isProcessingError) return;
+
         if (currentInput == targetCode)
         {
             if (currentSafeBox != null)
@@ -80,20 +87,23 @@ public class KeypadUI : MonoBehaviour
         {
             currentInput = "ERROR";
             UpdateDisplay();
+            isProcessingError = true;
 
             if (HealthHUD.Instance != null)
             {
                 HealthHUD.Instance.TakeDamage();
             }
 
-            StartCoroutine(ClearInputRoutine());
+            StartCoroutine(CloseAfterErrorRoutine());
         }
     }
 
-    private IEnumerator ClearInputRoutine()
+    private IEnumerator CloseAfterErrorRoutine()
     {
-        yield return new WaitForSecondsRealtime(1f);
-        ClearInput();
+        yield return new WaitForSecondsRealtime(0.6f);
+        currentInput = "";
+        isProcessingError = false;
+        CloseKeypad();
     }
 
     public void CloseKeypad()
