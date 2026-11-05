@@ -12,14 +12,17 @@ public class Player_Interaction : MonoBehaviour
     [SerializeField] private Movement movement;
 
     [Header("Seguridad")]
-    [Tooltip("Si la animación no libera al player (ej: trigger mal escrito), se libera solo pasado este tiempo")]
     [SerializeField] private float maxBusyTime = 3f;
 
-    public static System.Action<string, bool> OnInteractAnimation;   // trigger, mirror
+    [Header("Equipamiento")]
+    [SerializeField] private GameObject lampInHand;
+
+    public static System.Action<string, bool> OnInteractAnimation;
     public static System.Action<IInteractable> OnTargetChanged;
 
     private IInteractable currentTarget;
     private int interactionId;
+    private bool isLampEquipped;
 
     private void Awake()
     {
@@ -36,6 +39,8 @@ public class Player_Interaction : MonoBehaviour
 
     private void Update()
     {
+        CheckInput();
+
         Vector3 rayOrigin = GetRayOrigin();
         Vector3 rayDirection = GetRayDirection();
 
@@ -63,6 +68,14 @@ public class Player_Interaction : MonoBehaviour
         }
     }
 
+    private void CheckInput()
+    {
+        if (Keyboard.current != null && Keyboard.current.digit1Key.wasPressedThisFrame)
+        {
+            ToggleLamp();
+        }
+    }
+
     public void OnInteract(InputAction.CallbackContext context)
     {
         if (!context.performed || currentTarget == null) return;
@@ -70,8 +83,6 @@ public class Player_Interaction : MonoBehaviour
 
         IInteractable target = currentTarget;
 
-        // Trabada / sin llave / lado equivocado: se llama igual (para su mensaje),
-        // pero sin acercarse ni animar
         if (!target.CanInteract(transform))
         {
             target.Interact(transform);
@@ -97,21 +108,18 @@ public class Player_Interaction : MonoBehaviour
 
         DoInteract(target, stand);
 
-        // Failsafe: normalmente lo libera InteractionAnimState al terminar la animación
         yield return new WaitForSeconds(maxBusyTime);
         if (id == interactionId && movement.IsBusy)
         {
-            Debug.LogWarning("Player liberado por timeout: revisá que los estados Open/Close tengan InteractionAnimState y que los triggers coincidan.");
+            Debug.LogWarning("Player liberado por timeout");
             movement.SetBusy(false);
         }
     }
 
     private void DoInteract(IInteractable target, Transform stand)
     {
-        // Leer el trigger ANTES de Interact(), porque Interact() cambia isOpen
         string trigger = target.AnimTrigger;
 
-        // La animación original usa la mano izquierda; la espejada, la derecha
         StandPoint point = stand != null ? stand.GetComponent<StandPoint>() : null;
         bool mirror = point != null && point.UseHand == StandPoint.Hand.Right;
 
@@ -121,7 +129,43 @@ public class Player_Interaction : MonoBehaviour
         RefreshPrompt();
     }
 
-    // El objeto es el mismo, pero su Prompt pudo cambiar (Abrir <-> Cerrar)
+    public void EquipLamp()
+    {
+        if (ItemHUD.Instance != null)
+        {
+            ItemHUD.Instance.UnlockItem(ItemHUD.ItemType.Lamp);
+        }
+
+        isLampEquipped = true;
+
+        if (lampInHand != null)
+        {
+            lampInHand.SetActive(true);
+        }
+
+        if (LampOilHUD.Instance != null)
+        {
+            LampOilHUD.Instance.SetLampState(true);
+        }
+    }
+
+    public void ToggleLamp()
+    {
+        if (!ItemHUD.HasLamp) return;
+
+        isLampEquipped = !isLampEquipped;
+
+        if (lampInHand != null)
+        {
+            lampInHand.SetActive(isLampEquipped);
+        }
+
+        if (LampOilHUD.Instance != null)
+        {
+            LampOilHUD.Instance.SetLampState(isLampEquipped);
+        }
+    }
+
     private void RefreshPrompt()
     {
         if (currentTarget != null) OnTargetChanged?.Invoke(currentTarget);

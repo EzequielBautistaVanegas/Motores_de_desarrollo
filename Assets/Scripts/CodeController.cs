@@ -11,11 +11,16 @@ public class CodeController : MonoBehaviour, IInteractable
 
     public string Prompt => "Ingresar código";
     public Transform PromptAnchor => transform;
-    public string AnimTrigger => "Interact";
+    public string AnimTrigger => "";
+
+    public bool CanInteract(Transform interactor)
+    {
+        return true;
+    }
 
     public Transform GetStandPoint(Vector3 playerPos)
     {
-        return transform;
+        return null;
     }
 
     private void Awake()

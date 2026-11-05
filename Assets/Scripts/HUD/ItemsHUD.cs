@@ -11,6 +11,7 @@ public class ItemHUD : MonoBehaviour
 
     public static ItemHUD Instance { get; private set; }
     public static bool HasKey { get; private set; }
+    public static bool HasLamp { get; private set; }
 
     private void Awake()
     {
@@ -21,6 +22,7 @@ public class ItemHUD : MonoBehaviour
     private void Start()
     {
         HasKey = false;
+        HasLamp = false;
         if (_lampIcon != null) _lampIcon.SetActive(false);
         if (_keyIcon != null) _keyIcon.SetActive(false);
     }
@@ -35,14 +37,15 @@ public class ItemHUD : MonoBehaviour
 
     public void UnlockItem(ItemType type)
     {
-        if (type == ItemType.Lamp && _lampIcon != null)
+        if (type == ItemType.Lamp)
         {
-            _lampIcon.SetActive(true);
+            HasLamp = true;
+            if (_lampIcon != null) _lampIcon.SetActive(true);
         }
-        else if (type == ItemType.Key && _keyIcon != null)
+        else if (type == ItemType.Key)
         {
-            _keyIcon.SetActive(true);
             HasKey = true;
+            if (_keyIcon != null) _keyIcon.SetActive(true);
         }
     }
 }

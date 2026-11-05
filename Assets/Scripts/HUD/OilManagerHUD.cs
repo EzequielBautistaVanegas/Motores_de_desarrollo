@@ -7,10 +7,11 @@ public class LampOilHUD : MonoBehaviour
     [Header("Parametros")]
     [SerializeField] private Image _oilFillImage;
     [SerializeField] private float _maxOil = 100f;
-    [SerializeField] private float _drainRate;
+    [SerializeField] private float _drainRate = 0.5f;
 
     private float _currentOil;
     private bool _isLampEquipped;
+    private bool _hasTriggeredChase;
 
     public static LampOilHUD Instance { get; private set; }
 
@@ -26,20 +27,18 @@ public class LampOilHUD : MonoBehaviour
     private void Start()
     {
         _currentOil = _maxOil;
+        _hasTriggeredChase = false;
         UpdateUI();
     }
 
     private void Update()
     {
-        if (Keyboard.current != null && Keyboard.current.rKey.isPressed)
+        if (_isLampEquipped)
         {
             ConsumeOil(_drainRate * Time.deltaTime);
         }
-        else if (_isLampEquipped)
-        {
-            ConsumeOil(_drainRate * Time.deltaTime);
-        }
-        if (Keyboard.current.tKey.wasPressedThisFrame)
+
+        if (Keyboard.current != null && Keyboard.current.tKey.wasPressedThisFrame)
         {
             RefillCompletely();
         }
@@ -52,18 +51,29 @@ public class LampOilHUD : MonoBehaviour
         _currentOil -= amount;
         _currentOil = Mathf.Clamp(_currentOil, 0f, _maxOil);
         UpdateUI();
+
+        if (_currentOil <= 0f && !_hasTriggeredChase)
+        {
+            _hasTriggeredChase = true;
+            HealthHUD.OnTorchesExtinguished?.Invoke();
+        }
     }
 
     public void AddOil(float amount)
     {
         _currentOil += amount;
         _currentOil = Mathf.Clamp(_currentOil, 0f, _maxOil);
+        if (_currentOil > 0f)
+        {
+            _hasTriggeredChase = false;
+        }
         UpdateUI();
     }
 
     public void RefillCompletely()
     {
         _currentOil = _maxOil;
+        _hasTriggeredChase = false;
         UpdateUI();
     }
 
