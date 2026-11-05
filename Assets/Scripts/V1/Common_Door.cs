@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Common_Door : MonoBehaviour
+public class Common_Door : MonoBehaviour, IInteractable
 {
     public enum FacingAxis { Local_Y, Local_Z, Local_X }
 
@@ -16,22 +16,32 @@ public class Common_Door : MonoBehaviour
     [SerializeField] private bool onlyFromFront = true;
     [SerializeField] private FacingAxis facingAxis = FacingAxis.Local_Y;
 
+    [Header("Prompt Configuration")]
+    [SerializeField] private Transform _promptAnchor;
+
     [Header("Debug - Estado")]
     [SerializeField] private bool isOpen = false;
 
     private bool isAnimating = false;
     private Quaternion closedRotation;
 
+    public string Prompt => isOpen ? "Cerrar" : "Abrir";
+    public Transform PromptAnchor => _promptAnchor != null ? _promptAnchor : transform;
+    public string AnimTrigger => "Interact";
+
+    public Transform GetStandPoint(Vector3 playerPos)
+    {
+        return transform;
+    }
+
     private void Start()
     {
         closedRotation = transform.localRotation;
     }
 
-    public void Interact(Transform playerTransform)
+    public void Interact(Transform playerTransform = null)
     {
         if (!enabled || isAnimating) { return; }
-
-        if (isAnimating) return;
 
         if (isOpen)
         {
@@ -43,12 +53,28 @@ public class Common_Door : MonoBehaviour
             return;
         }
 
-        Vector3 localPlayerPos = transform.InverseTransformPoint(playerTransform.position);
-        bool isPlayerInFront = false;
+        if (playerTransform == null)
+        {
+            if (Camera.main != null)
+            {
+                playerTransform = Camera.main.transform;
+            }
+            else
+            {
+                GameObject playerObj = GameObject.FindWithTag("Player");
+                if (playerObj != null) playerTransform = playerObj.transform;
+            }
+        }
 
-        if (facingAxis == FacingAxis.Local_Y) isPlayerInFront = localPlayerPos.y > 0;
-        else if (facingAxis == FacingAxis.Local_X) isPlayerInFront = localPlayerPos.x > 0;
-        else isPlayerInFront = localPlayerPos.z > 0;
+        bool isPlayerInFront = true;
+
+        if (playerTransform != null)
+        {
+            Vector3 localPlayerPos = transform.InverseTransformPoint(playerTransform.position);
+            if (facingAxis == FacingAxis.Local_Y) isPlayerInFront = localPlayerPos.y > 0;
+            else if (facingAxis == FacingAxis.Local_X) isPlayerInFront = localPlayerPos.x > 0;
+            else isPlayerInFront = localPlayerPos.z > 0;
+        }
 
         if (isOneWay)
         {

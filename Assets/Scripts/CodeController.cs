@@ -1,15 +1,22 @@
-using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
 public class CodeController : MonoBehaviour, IInteractable
 {
-    /* Configuration Variables */
     [SerializeField] private float rotationVelocity = 60f;
-    /* Variables In Code */
+
     private int numCode;
     private float gradesTarget;
     private Transform pivot;
     private Quaternion rotationTarget;
+
+    public string Prompt => "Ingresar código";
+    public Transform PromptAnchor => transform;
+    public string AnimTrigger => "Interact";
+
+    public Transform GetStandPoint(Vector3 playerPos)
+    {
+        return transform;
+    }
 
     private void Awake()
     {
@@ -22,10 +29,10 @@ public class CodeController : MonoBehaviour, IInteractable
         Interact();
     }
 
-    public void Interact()
+    public void Interact(Transform player = null)
     {
         numCode += numCode < 6 ? 1 : -5;
-        
+
         switch (numCode)
         {
             case 1: gradesTarget = 90f; break;

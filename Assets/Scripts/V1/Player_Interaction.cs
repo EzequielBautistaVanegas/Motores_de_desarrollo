@@ -9,6 +9,11 @@ public class Player_Interaction : MonoBehaviour
     [SerializeField] private LayerMask interactiveLayer;
     [SerializeField] private Transform cameraTransform;
 
+    public static System.Action<string, bool> OnInteractAnimation;
+    public static System.Action<IInteractable> OnTargetChanged;
+
+    private IInteractable currentTarget;
+
     private void Start()
     {
         if (cameraTransform == null && Camera.main != null)
@@ -19,39 +24,38 @@ public class Player_Interaction : MonoBehaviour
 
     private void Update()
     {
-        Vector3 rayOrigin = transform.position + Vector3.up * playerEye;
+        Vector3 rayOrigin = GetRayOrigin();
         Vector3 rayDirection = GetRayDirection();
 
         Debug.DrawRay(rayOrigin, rayDirection * interactionDistance, Color.red);
-    }
-
-    public void OnInteract(InputAction.CallbackContext context)
-    {
-        
-        if (!context.performed) return;
-
-        Vector3 rayOrigin = GetRayOrigin();
-        Vector3 rayDirection = GetRayDirection();
 
         Ray ray = new Ray(rayOrigin, rayDirection);
 
         if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance, interactiveLayer))
         {
-            if (hit.collider == null) return;
-
-            Common_Door door = hit.collider.GetComponentInParent<Common_Door>();
-            if (door != null)
-            {
-                door.Interact(transform);
-                return;
-            }
-
             IInteractable interactable = hit.collider.GetComponentInParent<IInteractable>();
-            if (interactable != null)
+
+            if (interactable != currentTarget)
             {
-                interactable.Interact();
+                currentTarget = interactable;
+                OnTargetChanged?.Invoke(currentTarget);
             }
         }
+        else
+        {
+            if (currentTarget != null)
+            {
+                currentTarget = null;
+                OnTargetChanged?.Invoke(null);
+            }
+        }
+    }
+
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        if (!context.performed || currentTarget == null) return;
+
+        currentTarget.Interact(transform);
     }
 
     private Vector3 GetRayOrigin()
