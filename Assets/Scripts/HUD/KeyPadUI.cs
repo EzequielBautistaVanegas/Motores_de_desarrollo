@@ -80,6 +80,12 @@ public class KeypadUI : MonoBehaviour
         {
             currentInput = "ERROR";
             UpdateDisplay();
+
+            if (HealthHUD.Instance != null)
+            {
+                HealthHUD.Instance.TakeDamage();
+            }
+
             StartCoroutine(ClearInputRoutine());
         }
     }
