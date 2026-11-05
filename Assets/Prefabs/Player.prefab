@@ -231,6 +231,7 @@ MonoBehaviour:
   _walkSpeed: 5
   _sprintSpeed: 10
   _maxStamina: 100
+  _staminaRegenRate: 15
   _rotateSpeed: 0.2
   _modelTurnSpeed: 10
   lookDeviation: -15
@@ -238,7 +239,8 @@ MonoBehaviour:
   maxLookAngle: 30
   minLookAngle: 0
   _gravity: -9.81
-  dampTime: 0.15
+  _approachTurnSpeed: 360
+  _approachTimeout: 1.5
 --- !u!114 &8957940914694328026
 MonoBehaviour:
   m_ObjectHideFlags: 0
