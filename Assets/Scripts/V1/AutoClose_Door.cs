@@ -16,18 +16,16 @@ public class AutoClose_Door : MonoBehaviour
         {
             if (mainDoor != null)
             {
-                mainDoor.CloseDoor();
-                mainDoor.enabled = false;
+                mainDoor.CloseAndLockDoor();
             }
 
             if (linkedDoor != null)
             {
-                linkedDoor.CloseDoor();
-                linkedDoor.enabled = false;
+                linkedDoor.CloseAndLockDoor();
             }
 
             hasTriggered = true;
-            Debug.Log("Puerta principal cerrada");
+            Debug.Log("Puerta principal cerrada y trabada");
         }
     }
 }

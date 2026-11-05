@@ -11,6 +11,12 @@ public class Common_Door : MonoBehaviour, IInteractable
     [SerializeField] private Vector3 rotationAxis = Vector3.forward;
     [SerializeField] private Common_Door linkDoor;
 
+    [Header("Bloqueo")]
+    [SerializeField] private bool isLocked = false;
+    [SerializeField] private string lockedPrompt = "Puerta trabada";
+    [SerializeField] private string openPrompt = "Abrir";
+    [SerializeField] private string closePrompt = "Cerrar";
+
     [Header("Unidireccion")]
     [SerializeField] private bool isOneWay = false;
     [SerializeField] private bool onlyFromFront = true;
@@ -25,7 +31,32 @@ public class Common_Door : MonoBehaviour, IInteractable
     private bool isAnimating = false;
     private Quaternion closedRotation;
 
-    public string Prompt => isOpen ? "Cerrar" : "Abrir";
+    public string Prompt
+    {
+        get
+        {
+            if (isLocked)
+            {
+                return ItemHUD.HasKey ? openPrompt : lockedPrompt;
+            }
+
+            if (!isOpen && isOneWay)
+            {
+                Transform playerTransform = GetPlayerTransform();
+                if (playerTransform != null)
+                {
+                    bool isPlayerInFront = CheckIfPlayerInFront(playerTransform);
+                    if ((onlyFromFront && !isPlayerInFront) || (!onlyFromFront && isPlayerInFront))
+                    {
+                        return lockedPrompt;
+                    }
+                }
+            }
+
+            return isOpen ? closePrompt : openPrompt;
+        }
+    }
+
     public Transform PromptAnchor => _promptAnchor != null ? _promptAnchor : transform;
     public string AnimTrigger => "Interact";
 
@@ -43,6 +74,19 @@ public class Common_Door : MonoBehaviour, IInteractable
     {
         if (!enabled || isAnimating) { return; }
 
+        if (isLocked)
+        {
+            if (ItemHUD.HasKey)
+            {
+                UnlockDoor();
+            }
+            else
+            {
+                Debug.Log("Puerta Trabada");
+                return;
+            }
+        }
+
         if (isOpen)
         {
             CloseDoor();
@@ -55,26 +99,10 @@ public class Common_Door : MonoBehaviour, IInteractable
 
         if (playerTransform == null)
         {
-            if (Camera.main != null)
-            {
-                playerTransform = Camera.main.transform;
-            }
-            else
-            {
-                GameObject playerObj = GameObject.FindWithTag("Player");
-                if (playerObj != null) playerTransform = playerObj.transform;
-            }
+            playerTransform = GetPlayerTransform();
         }
 
-        bool isPlayerInFront = true;
-
-        if (playerTransform != null)
-        {
-            Vector3 localPlayerPos = transform.InverseTransformPoint(playerTransform.position);
-            if (facingAxis == FacingAxis.Local_Y) isPlayerInFront = localPlayerPos.y > 0;
-            else if (facingAxis == FacingAxis.Local_X) isPlayerInFront = localPlayerPos.x > 0;
-            else isPlayerInFront = localPlayerPos.z > 0;
-        }
+        bool isPlayerInFront = CheckIfPlayerInFront(playerTransform);
 
         if (isOneWay)
         {
@@ -92,6 +120,51 @@ public class Common_Door : MonoBehaviour, IInteractable
         {
             linkDoor.OpenDoorWithAngle(-primaryAngle);
         }
+    }
+
+    public void CloseAndLockDoor()
+    {
+        if (isOpen)
+        {
+            CloseDoor();
+            if (linkDoor != null && linkDoor.isOpen)
+            {
+                linkDoor.CloseDoor();
+            }
+        }
+
+        isLocked = true;
+    }
+
+    public void UnlockDoor()
+    {
+        isLocked = false;
+    }
+
+    public void LockDoor()
+    {
+        isLocked = true;
+    }
+
+    private Transform GetPlayerTransform()
+    {
+        if (Camera.main != null)
+        {
+            return Camera.main.transform;
+        }
+
+        GameObject playerObj = GameObject.FindWithTag("Player");
+        return playerObj != null ? playerObj.transform : null;
+    }
+
+    private bool CheckIfPlayerInFront(Transform playerTransform)
+    {
+        if (playerTransform == null) return true;
+
+        Vector3 localPlayerPos = transform.InverseTransformPoint(playerTransform.position);
+        if (facingAxis == FacingAxis.Local_Y) return localPlayerPos.y > 0;
+        if (facingAxis == FacingAxis.Local_X) return localPlayerPos.x > 0;
+        return localPlayerPos.z > 0;
     }
 
     public void OpenDoorWithAngle(float angle)

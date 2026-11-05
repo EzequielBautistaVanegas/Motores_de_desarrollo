@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,6 +8,7 @@ public class _TestEnemy : MonoBehaviour
 {
     [Header("Parametros")]
     [SerializeField] private Transform target;
+    [SerializeField] private float attackDistance = 3.5f;
 
     [Header("Points Vigilancia")]
     [SerializeField] private Transform[] ePoints;
@@ -33,35 +33,41 @@ public class _TestEnemy : MonoBehaviour
         agent.enabled = false;
     }
 
+    private void OnEnable()
+    {
+        HealthHUD.OnTorchesExtinguished += TriggerChase;
+    }
+
+    private void OnDisable()
+    {
+        HealthHUD.OnTorchesExtinguished -= TriggerChase;
+    }
+
     private void Start()
     {
         if (ePoints != null && ePoints.Length > 0 && ePoints[0] != null)
         {
-            transform.position = (ePoints[0].position);
+            transform.position = ePoints[0].position;
         }
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T) && !isDescending && !isAscending)
-        {
-            if (!isChasing && !isReturning)
-            {
-                TriggerChase();
-            }
-            else
-            {
-                TriggerReturn();
-            }
-        }
-
         if (!isChasing && !isDescending && !isAscending && !isReturning)
         {
             PlatformRoutine();
         }
+
         if (isChasing && !isReturning && agent.enabled && agent.isOnNavMesh && target != null)
         {
             agent.SetDestination(target.position);
+
+            float distanceToPlayer = Vector3.Distance(transform.position, target.position);
+
+            if (distanceToPlayer <= attackDistance)
+            {
+                KillPlayer();
+            }
         }
     }
 
@@ -71,7 +77,7 @@ public class _TestEnemy : MonoBehaviour
 
         platformTimer += Time.deltaTime;
 
-        if (platformTimer >= platformChangeInterval && !isMovingToPlataform) 
+        if (platformTimer >= platformChangeInterval && !isMovingToPlataform)
         {
             platformTimer = 0;
             currentPlatformIndex = (currentPlatformIndex + 1) % ePoints.Length;
@@ -79,20 +85,21 @@ public class _TestEnemy : MonoBehaviour
         }
     }
 
-    private IEnumerator MoveNextPlataform(Vector3 target)
+    private IEnumerator MoveNextPlataform(Vector3 targetPos)
     {
         isMovingToPlataform = true;
 
-        while (Vector3.Distance(transform.position, target) > 0.05f)
+        while (Vector3.Distance(transform.position, targetPos) > 0.05f)
         {
             if (isDescending || isChasing) yield break;
-            transform.position = Vector3.MoveTowards(transform.position, target, platformMoveSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, platformMoveSpeed * Time.deltaTime);
             yield return null;
         }
 
-        transform.position = target;
+        transform.position = targetPos;
         isMovingToPlataform = false;
     }
+
     public void TriggerChase()
     {
         if (isDescending) return;
@@ -150,7 +157,7 @@ public class _TestEnemy : MonoBehaviour
 
         agent.enabled = false;
         isAscending = true;
-        
+
         while (Vector3.Distance(transform.position, targetPlatformPos) > 0.05f)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPlatformPos, descendSpeed * Time.deltaTime);
@@ -185,5 +192,39 @@ public class _TestEnemy : MonoBehaviour
 
         isDescending = false;
         isChasing = true;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!isChasing) return;
+
+        if (other.CompareTag("Player"))
+        {
+            KillPlayer();
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!isChasing) return;
+
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            KillPlayer();
+        }
+    }
+
+    private void KillPlayer()
+    {
+        if (DeathScreenUI.Instance != null)
+        {
+            DeathScreenUI.Instance.ShowDeathScreen();
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackDistance);
     }
 }
