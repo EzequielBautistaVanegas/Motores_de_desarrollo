@@ -6,7 +6,7 @@ public class SafeRoom : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            _TestEnemy enemy = FindObjectOfType<_TestEnemy>();
+            _TestEnemy enemy = FindFirstObjectByType<_TestEnemy>();
             if (enemy != null)
             {
                 enemy.TriggerReturn();

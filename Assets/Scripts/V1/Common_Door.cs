@@ -26,7 +26,6 @@ public class Common_Door : MonoBehaviour, IInteractable
     [SerializeField] private Transform _promptAnchor;
 
     [Header("Animación del personaje")]
-    [Tooltip("Segundos desde que arranca la animación hasta que la mano toca la puerta")]
     [SerializeField] private float interactDelay = 0.4f;
     [SerializeField] private string openTrigger = "Open";
     [SerializeField] private string closeTrigger = "Close";
@@ -34,8 +33,17 @@ public class Common_Door : MonoBehaviour, IInteractable
     [Header("Puntos de parada (NO pueden ser hijos de esta puerta, porque gira)")]
     [SerializeField] private Transform openPointFront;
     [SerializeField] private Transform openPointBack;
-    [SerializeField] private Transform closePointFront;   // opcional: si falta, usa el de abrir
-    [SerializeField] private Transform closePointBack;    // opcional: si falta, usa el de abrir
+    [SerializeField] private Transform closePointFront;
+    [SerializeField] private Transform closePointBack;
+
+    [Header("Sonido")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip openClip;
+    [SerializeField] private AudioClip closeClip;
+
+    [Header("Cierre automático")]
+    [SerializeField] private bool autoClose = true;
+    [SerializeField] private float autoCloseDelay = 3f;
 
     [Header("Debug - Estado")]
     [SerializeField] private bool isOpen = false;
@@ -43,6 +51,7 @@ public class Common_Door : MonoBehaviour, IInteractable
     private bool isAnimating = false;
     private Quaternion closedRotation;
     private Transform cachedPlayer;
+    private Coroutine autoCloseRoutine;
 
     public string Prompt
     {
@@ -89,7 +98,6 @@ public class Common_Door : MonoBehaviour, IInteractable
 
     private void Awake()
     {
-        // En Awake (no Start) para que IsInFront funcione aunque se consulte antes
         closedRotation = transform.localRotation;
     }
 
@@ -168,8 +176,6 @@ public class Common_Door : MonoBehaviour, IInteractable
 
     private Transform GetPlayerTransform()
     {
-        // Primero el player: con cámara sobre el hombro, la cámara puede quedar
-        // del otro lado de la puerta aunque el personaje no
         if (cachedPlayer == null)
         {
             GameObject playerObj = GameObject.FindWithTag("Player");
@@ -188,7 +194,6 @@ public class Common_Door : MonoBehaviour, IInteractable
         return onlyFromFront ? !inFront : inFront;
     }
 
-    // Se calcula respecto de la puerta CERRADA, así da bien aunque esté abierta
     private bool IsInFront(Vector3 worldPos)
     {
         Vector3 pos = transform.parent != null ? transform.parent.InverseTransformPoint(worldPos) : worldPos;
@@ -206,23 +211,31 @@ public class Common_Door : MonoBehaviour, IInteractable
     {
         if (isAnimating) return;
         Quaternion targetRotation = closedRotation * Quaternion.AngleAxis(angle, rotationAxis);
-        StartCoroutine(AnimateDoor(targetRotation, delay));
+        StartCoroutine(AnimateDoor(targetRotation, delay, openClip, true));
         isOpen = true;
     }
 
     public void CloseDoor(float delay = 0f)
     {
         if (isAnimating) return;
-        StartCoroutine(AnimateDoor(closedRotation, delay));
+
+        if (autoCloseRoutine != null)
+        {
+            StopCoroutine(autoCloseRoutine);
+            autoCloseRoutine = null;
+        }
+
+        StartCoroutine(AnimateDoor(closedRotation, delay, closeClip, false));
         isOpen = false;
     }
 
-    private IEnumerator AnimateDoor(Quaternion targetRotation, float delay)
+    private IEnumerator AnimateDoor(Quaternion targetRotation, float delay, AudioClip clip, bool opening)
     {
         isAnimating = true;
 
-        // Esperar a que la mano llegue a la puerta
         if (delay > 0f) yield return new WaitForSeconds(delay);
+
+        if (audioSource != null && clip != null) audioSource.PlayOneShot(clip);
 
         Quaternion startRotation = transform.localRotation;
         float time = 0f;
@@ -236,5 +249,15 @@ public class Common_Door : MonoBehaviour, IInteractable
 
         transform.localRotation = targetRotation;
         isAnimating = false;
+
+        if (opening && autoClose)
+            autoCloseRoutine = StartCoroutine(AutoCloseAfterDelay());
+    }
+
+    private IEnumerator AutoCloseAfterDelay()
+    {
+        yield return new WaitForSeconds(autoCloseDelay);
+        autoCloseRoutine = null;
+        if (isOpen) CloseDoor();
     }
 }
