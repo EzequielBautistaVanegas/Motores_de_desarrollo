@@ -37,12 +37,22 @@ public class Common_Door : MonoBehaviour, IInteractable
     [SerializeField] private Transform closePointFront;   // opcional: si falta, usa el de abrir
     [SerializeField] private Transform closePointBack;    // opcional: si falta, usa el de abrir
 
+    [Header("Sonido")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip openClip;
+    [SerializeField] private AudioClip closeClip;
+
+    [Header("Cierre automático")]
+    [SerializeField] private bool autoClose = true;
+    [SerializeField] private float autoCloseDelay = 3f;
+
     [Header("Debug - Estado")]
     [SerializeField] private bool isOpen = false;
 
     private bool isAnimating = false;
     private Quaternion closedRotation;
     private Transform cachedPlayer;
+    private Coroutine autoCloseRoutine;
 
     public string Prompt
     {
@@ -206,23 +216,34 @@ public class Common_Door : MonoBehaviour, IInteractable
     {
         if (isAnimating) return;
         Quaternion targetRotation = closedRotation * Quaternion.AngleAxis(angle, rotationAxis);
-        StartCoroutine(AnimateDoor(targetRotation, delay));
+        StartCoroutine(AnimateDoor(targetRotation, delay, openClip, true));
         isOpen = true;
     }
 
     public void CloseDoor(float delay = 0f)
     {
         if (isAnimating) return;
-        StartCoroutine(AnimateDoor(closedRotation, delay));
+
+        // Si la cierran a mano, cancelo el cierre automático pendiente
+        if (autoCloseRoutine != null)
+        {
+            StopCoroutine(autoCloseRoutine);
+            autoCloseRoutine = null;
+        }
+
+        StartCoroutine(AnimateDoor(closedRotation, delay, closeClip, false));
         isOpen = false;
     }
 
-    private IEnumerator AnimateDoor(Quaternion targetRotation, float delay)
+    private IEnumerator AnimateDoor(Quaternion targetRotation, float delay, AudioClip clip, bool opening)
     {
         isAnimating = true;
 
         // Esperar a que la mano llegue a la puerta
         if (delay > 0f) yield return new WaitForSeconds(delay);
+
+        // Suena justo cuando la puerta empieza a moverse
+        if (audioSource != null && clip != null) audioSource.PlayOneShot(clip);
 
         Quaternion startRotation = transform.localRotation;
         float time = 0f;
@@ -236,5 +257,16 @@ public class Common_Door : MonoBehaviour, IInteractable
 
         transform.localRotation = targetRotation;
         isAnimating = false;
+
+        // Al terminar de abrir, programo el cierre automático
+        if (opening && autoClose)
+            autoCloseRoutine = StartCoroutine(AutoCloseAfterDelay());
+    }
+
+    private IEnumerator AutoCloseAfterDelay()
+    {
+        yield return new WaitForSeconds(autoCloseDelay);
+        autoCloseRoutine = null;
+        if (isOpen) CloseDoor();
     }
 }
