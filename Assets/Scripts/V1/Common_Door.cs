@@ -17,6 +17,10 @@ public class Common_Door : MonoBehaviour, IInteractable
     [SerializeField] private string openPrompt = "Abrir";
     [SerializeField] private string closePrompt = "Cerrar";
 
+    [Header("Requisito de Lámpara")]
+    [SerializeField] private bool requireLampToOpen = false;
+    [SerializeField] private bool triggerChaseIfNoLamp = true;
+
     [Header("Unidireccion")]
     [SerializeField] private bool isOneWay = false;
     [SerializeField] private bool onlyFromFront = true;
@@ -104,6 +108,19 @@ public class Common_Door : MonoBehaviour, IInteractable
     public void Interact(Transform playerTransform = null)
     {
         if (!enabled || isAnimating) { return; }
+
+        if (requireLampToOpen && !ItemHUD.HasLamp)
+        {
+            if (triggerChaseIfNoLamp)
+            {
+                _TestEnemy enemy = FindFirstObjectByType<_TestEnemy>();
+                if (enemy != null)
+                {
+                    enemy.TriggerChase();
+                }
+            }
+            return;
+        }
 
         if (isLocked)
         {
