@@ -283,7 +283,7 @@ PrefabInstance:
     - target: {fileID: 4279900074323969433, guid: 017e0bd4c02c8c647b2a3d815406cb8e, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 4eb66b3d0bbffd44bade01c6219b48ac, type: 3}
+      objectReference: {fileID: 21300000, guid: f7d507d95ede49842a21c0a837c10efb, type: 3}
     - target: {fileID: 5979914997792010791, guid: 017e0bd4c02c8c647b2a3d815406cb8e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
