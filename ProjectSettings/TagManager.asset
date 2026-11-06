@@ -8,7 +8,8 @@ TagManager:
   - Door
   - Button
   - SafeBox
-  tags: []
+  - Enemy
+  - AI_Exclusiones
   layers:
   - Default
   - TransparentFX
@@ -17,8 +18,8 @@ TagManager:
   - Water
   - UI
   - interactable
-  - 
-  - 
+  - IA_Exclusiones
+  - Player
   - 
   - 
   - 
@@ -55,4 +56,3 @@ TagManager:
   - Light Layer 5
   - Light Layer 6
   - Light Layer 7
-  m_MigratedRenderPipelines: []

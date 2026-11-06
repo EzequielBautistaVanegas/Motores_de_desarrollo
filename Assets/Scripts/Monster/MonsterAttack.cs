@@ -6,6 +6,8 @@ public class MonsterAttack : MonoBehaviour
     [SerializeField] private PlayerHealth playerHealth;
     [SerializeField, Min(0f)] private float attackCooldown = 4f;
 
+    [SerializeField] private MonsterAnimationDriver animationDriver;
+
     private float nextAttackTime;
 
     private void OnTriggerStay(Collider other)
@@ -26,6 +28,8 @@ public class MonsterAttack : MonoBehaviour
             Debug.LogError("MonsterAttack: PlayerLight falta", this);
             return;
         }
+
+        if (animationDriver != null) animationDriver.PlayAttack();
 
         if (!playerLight.IsLightOn())
         {

@@ -1,0 +1,280 @@
+using System.Collections;
+using UnityEngine;
+
+public class Common_Door : MonoBehaviour, IInteractable
+{
+    public enum FacingAxis { Local_Y, Local_Z, Local_X }
+
+    [Header("Apertura")]
+    [SerializeField] private float openAngle = 90f;
+    [SerializeField] private float openSpeed = 3f;
+    [SerializeField] private Vector3 rotationAxis = Vector3.forward;
+    [SerializeField] private Common_Door linkDoor;
+
+    [Header("Bloqueo")]
+    [SerializeField] private bool isLocked = false;
+    [SerializeField] private string lockedPrompt = "Puerta trabada";
+    [SerializeField] private string openPrompt = "Abrir";
+    [SerializeField] private string closePrompt = "Cerrar";
+
+    [Header("Requisito de Lámpara")]
+    [SerializeField] private bool requireLampToOpen = false;
+    [SerializeField] private bool triggerChaseIfNoLamp = true;
+
+    [Header("Unidireccion")]
+    [SerializeField] private bool isOneWay = false;
+    [SerializeField] private bool onlyFromFront = true;
+    [SerializeField] private FacingAxis facingAxis = FacingAxis.Local_Y;
+
+    [Header("Prompt Configuration")]
+    [SerializeField] private Transform _promptAnchor;
+
+    [Header("Animación del personaje")]
+    [SerializeField] private float interactDelay = 0.4f;
+    [SerializeField] private string openTrigger = "Open";
+    [SerializeField] private string closeTrigger = "Close";
+
+    [Header("Puntos de parada (NO pueden ser hijos de esta puerta, porque gira)")]
+    [SerializeField] private Transform openPointFront;
+    [SerializeField] private Transform openPointBack;
+    [SerializeField] private Transform closePointFront;
+    [SerializeField] private Transform closePointBack;
+
+    [Header("Sonido")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip openClip;
+    [SerializeField] private AudioClip closeClip;
+
+    [Header("Cierre automático")]
+    [SerializeField] private bool autoClose = true;
+    [SerializeField] private float autoCloseDelay = 3f;
+
+    [Header("Debug - Estado")]
+    [SerializeField] private bool isOpen = false;
+
+    private bool isAnimating = false;
+    private Quaternion closedRotation;
+    private Transform cachedPlayer;
+    private Coroutine autoCloseRoutine;
+
+    public string Prompt
+    {
+        get
+        {
+            if (isLocked)
+            {
+                return ItemHUD.HasKey ? openPrompt : lockedPrompt;
+            }
+
+            if (!isOpen && IsBlockedByOneWay(GetPlayerTransform()))
+            {
+                return lockedPrompt;
+            }
+
+            return isOpen ? closePrompt : openPrompt;
+        }
+    }
+
+    public Transform PromptAnchor => _promptAnchor != null ? _promptAnchor : transform;
+    public string AnimTrigger => isOpen ? closeTrigger : openTrigger;
+
+    public bool CanInteract(Transform player)
+    {
+        if (!enabled || isAnimating) return false;
+        if (isLocked && !ItemHUD.HasKey) return false;
+
+        if (player == null) player = GetPlayerTransform();
+        if (!isOpen && IsBlockedByOneWay(player)) return false;
+
+        return true;
+    }
+
+    public Transform GetStandPoint(Vector3 playerPos)
+    {
+        bool front = IsInFront(playerPos);
+
+        Transform openPoint = front ? openPointFront : openPointBack;
+        if (!isOpen) return openPoint;
+
+        Transform closePoint = front ? closePointFront : closePointBack;
+        return closePoint != null ? closePoint : openPoint;
+    }
+
+    private void Awake()
+    {
+        closedRotation = transform.localRotation;
+    }
+
+    public void Interact(Transform playerTransform = null)
+    {
+        if (!enabled || isAnimating) { return; }
+
+        if (requireLampToOpen && !ItemHUD.HasLamp)
+        {
+            if (triggerChaseIfNoLamp)
+            {
+                _TestEnemy enemy = FindFirstObjectByType<_TestEnemy>();
+                if (enemy != null)
+                {
+                    enemy.TriggerChase();
+                }
+            }
+            return;
+        }
+
+        if (isLocked)
+        {
+            if (ItemHUD.HasKey)
+            {
+                UnlockDoor();
+            }
+            else
+            {
+                Debug.Log("Puerta Trabada");
+                return;
+            }
+        }
+
+        if (isOpen)
+        {
+            CloseDoor(interactDelay);
+            if (linkDoor != null && linkDoor.isOpen)
+            {
+                linkDoor.CloseDoor(interactDelay);
+            }
+            return;
+        }
+
+        if (playerTransform == null)
+        {
+            playerTransform = GetPlayerTransform();
+        }
+
+        if (IsBlockedByOneWay(playerTransform))
+        {
+            Debug.Log("Puerta Trabada");
+            return;
+        }
+
+        bool isPlayerInFront = playerTransform == null || IsInFront(playerTransform.position);
+
+        float primaryAngle = isPlayerInFront ? -openAngle : openAngle;
+        OpenDoorWithAngle(primaryAngle, interactDelay);
+
+        if (linkDoor != null)
+        {
+            linkDoor.OpenDoorWithAngle(-primaryAngle, interactDelay);
+        }
+    }
+
+    public void CloseAndLockDoor()
+    {
+        if (isOpen)
+        {
+            CloseDoor();
+            if (linkDoor != null && linkDoor.isOpen)
+            {
+                linkDoor.CloseDoor();
+            }
+        }
+
+        isLocked = true;
+    }
+
+    public void UnlockDoor()
+    {
+        isLocked = false;
+    }
+
+    public void LockDoor()
+    {
+        isLocked = true;
+    }
+
+    private Transform GetPlayerTransform()
+    {
+        if (cachedPlayer == null)
+        {
+            GameObject playerObj = GameObject.FindWithTag("Player");
+            if (playerObj != null) cachedPlayer = playerObj.transform;
+        }
+
+        if (cachedPlayer != null) return cachedPlayer;
+        return Camera.main != null ? Camera.main.transform : null;
+    }
+
+    private bool IsBlockedByOneWay(Transform player)
+    {
+        if (!isOneWay || player == null) return false;
+
+        bool inFront = IsInFront(player.position);
+        return onlyFromFront ? !inFront : inFront;
+    }
+
+    private bool IsInFront(Vector3 worldPos)
+    {
+        Vector3 pos = transform.parent != null ? transform.parent.InverseTransformPoint(worldPos) : worldPos;
+        Vector3 rel = Quaternion.Inverse(closedRotation) * (pos - transform.localPosition);
+
+        switch (facingAxis)
+        {
+            case FacingAxis.Local_Y: return rel.y > 0;
+            case FacingAxis.Local_X: return rel.x > 0;
+            default: return rel.z > 0;
+        }
+    }
+
+    public void OpenDoorWithAngle(float angle, float delay = 0f)
+    {
+        if (isAnimating) return;
+        Quaternion targetRotation = closedRotation * Quaternion.AngleAxis(angle, rotationAxis);
+        StartCoroutine(AnimateDoor(targetRotation, delay, openClip, true));
+        isOpen = true;
+    }
+
+    public void CloseDoor(float delay = 0f)
+    {
+        if (isAnimating) return;
+
+        if (autoCloseRoutine != null)
+        {
+            StopCoroutine(autoCloseRoutine);
+            autoCloseRoutine = null;
+        }
+
+        StartCoroutine(AnimateDoor(closedRotation, delay, closeClip, false));
+        isOpen = false;
+    }
+
+    private IEnumerator AnimateDoor(Quaternion targetRotation, float delay, AudioClip clip, bool opening)
+    {
+        isAnimating = true;
+
+        if (delay > 0f) yield return new WaitForSeconds(delay);
+
+        if (audioSource != null && clip != null) audioSource.PlayOneShot(clip);
+
+        Quaternion startRotation = transform.localRotation;
+        float time = 0f;
+
+        while (time < 1f)
+        {
+            time += Time.deltaTime * openSpeed;
+            transform.localRotation = Quaternion.Slerp(startRotation, targetRotation, time);
+            yield return null;
+        }
+
+        transform.localRotation = targetRotation;
+        isAnimating = false;
+
+        if (opening && autoClose)
+            autoCloseRoutine = StartCoroutine(AutoCloseAfterDelay());
+    }
+
+    private IEnumerator AutoCloseAfterDelay()
+    {
+        yield return new WaitForSeconds(autoCloseDelay);
+        autoCloseRoutine = null;
+        if (isOpen) CloseDoor();
+    }
+}
